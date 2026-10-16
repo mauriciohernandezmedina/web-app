@@ -50,4 +50,13 @@ We follow a 7-step Contribution Workflow strictly. Do not deviate from it.
 - Environment variables exist inside `src/environments/` and `env.sample`. Look at `CONTRIBUTING.md` and `README.md` if encountering variables like $MIFOS_COMPLIANCE_HIDE_CLIENT_DATA.
 - Re-use the lodash and moment libraries efficiently. Do not install additional JS dependencies for what `lodash` and `moment` can achieve.
 
+## Custom Fork & Autonomous Agent Rules (Google Jules)
+
+- **Component Architecture (Angular v20 in NgModule context):** Match the declaration style (`standalone: false` declared inside domain modules like `LoansModule`, or existing project convention in `src/app/loans/`) and ALWAYS inject dependencies (`FormBuilder`, `LoansService`, `ActivatedRoute`, `SettingsService`) via the `constructor` as mandated in `skills/SKILL.md`.
+- **Styling Disambiguation:** To satisfy both `AGENTS.md` and `skills/SKILL.md` without triggering linter warnings, always use utility classes on the 8px grid (e.g., `class="m-b-16"`, `class="m-t-16"`) and theme SCSS variables instead of inline `style="..."` attributes.
+- **Translation Keys Convention:** Follow existing Mifos X key namespaces (`labels.inputs.*`, `labels.buttons.*`, `labels.heading.*`, `labels.text.*`) rather than inventing root-level keys. Always run `npm run translations:extract` after adding new keys.
+- **Build & CI Verification:** In addition to `npm run headers:add`, `npm run headers:check`, `npx prettier --write .`, and `npm run lint`, ALWAYS run `npm run build` to catch Angular template compilation (`ngtsc`) errors.
+- **Targeted Unit Tests:** Run Jest on specific created/modified spec files (`npx jest <path-to-spec>`) to verify logic quickly without full-suite timeouts.
+- **Financial Calculations Guardrail:** NEVER implement loan amortization or interest formulas in TypeScript. Always delegate calculations to Apache Fineract (`POST /loans?command=calculateLoanSchedule`) via `LoansService`.
+
 Please apply these standards rigorously across every file modification you make.
