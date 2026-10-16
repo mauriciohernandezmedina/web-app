@@ -101,6 +101,7 @@ const activities: any[] = [
   { activity: 'navigation', path: '/navigation' },
   { activity: 'remittances', path: '/remittances/process' },
   { activity: 'loans', path: '/loans' },
+  { activity: 'labels.menus.Loan Simulator', path: '/loans/simulator' },
   { activity: 'collections', path: '/collections/collection-sheet' },
   { activity: 'notifications', path: '/notifications' },
   { activity: 'profile', path: '/profile' },

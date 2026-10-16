@@ -26,6 +26,7 @@ import { FloatingInterestRatesComponent } from './loans-view/floating-interest-r
 import { LoanTrancheDetailsComponent } from './loans-view/loan-tranche-details/loan-tranche-details.component';
 import { LoanCollateralTabComponent } from './loans-view/loan-collateral-tab/loan-collateral-tab.component';
 import { CreateLoansAccountComponent } from './create-loans-account/create-loans-account.component';
+import { LoanSimulatorComponent } from './loan-simulator/loan-simulator.component';
 import { LoanDocumentsTabComponent } from './loans-view/loan-documents-tab/loan-documents-tab.component';
 import { StandingInstructionsTabComponent } from 'app/loans/loans-view/standing-instructions-tab/standing-instructions-tab.component';
 import { EditLoansAccountComponent } from './edit-loans-account/edit-loans-account.component';
@@ -55,6 +56,7 @@ import { LoansAccountTemplateResolver } from './common-resolvers/loans-account-t
 import { LoanDocumentsResolver } from './common-resolvers/loan-documents.resolver';
 import { LoansAccountAndTemplateResolver } from './common-resolvers/loans-account-and-template.resolver';
 import { LoansAccountChargeResolver } from './common-resolvers/loans-account-charge.resolver';
+import { LoanSimulatorTemplateResolver } from './common-resolvers/loan-simulator-template.resolver';
 import { LoansAccountTransactionResolver } from './common-resolvers/loans-account-transaction.resolver';
 import { LoansTransactionRecieptResolver } from './common-resolvers/loans-transaction-reciept.resolver';
 import { LoansAccountTransactionTemplateResolver } from './common-resolvers/loans-account-transaction-template.resolver';
@@ -106,6 +108,14 @@ const routes: Routes = [
     path: '',
     data: { title: 'Loans', breadcrumb: 'Loans', routeParamBreadcrumb: false },
     children: [
+      {
+        path: 'simulator',
+        data: { title: 'Loan Simulator', breadcrumb: 'Loan Simulator' },
+        component: LoanSimulatorComponent,
+        resolve: {
+          loanProductsBasicDetails: LoanSimulatorTemplateResolver
+        }
+      },
       {
         path: 'create',
         data: { title: 'Create Loans Account', breadcrumb: 'Create Loans Account' },
@@ -554,7 +564,8 @@ const routes: Routes = [
     LoanChargesResolver,
     LoanBreachScheduleResolver,
     LoanNearBreachActionsResolver,
-    LoanBreachActionsResolver
+    LoanBreachActionsResolver,
+    LoanSimulatorTemplateResolver
   ]
 })
 export class LoansRoutingModule {}

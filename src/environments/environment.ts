@@ -80,6 +80,7 @@ export const environment = {
   defaultFormatDate: loadedEnv.defaultFormatDate || '',
   defaultFormatDatetime: loadedEnv.defaultFormatDatetime || '',
   preloadClients: loadedEnv['preloadClients'] || true,
+  defaultSimulatorClientId: 1,
 
   defaultCharDelimiter: loadedEnv.defaultCharDelimiter || ',',
 
