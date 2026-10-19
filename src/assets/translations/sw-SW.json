@@ -13,7 +13,10 @@
       "currency": "Sarafu",
       "showLastCutOff": "Onyesha kufungwa kwa mwisho"
     },
-    "types": { "CASH": "Fedha taslimu", "CHECK": "Hundi" },
+    "types": {
+      "CASH": "Fedha taslimu",
+      "CHECK": "Hundi"
+    },
     "columns": {
       "user": "Mtumiaji / Mtunzaji",
       "name": "Jina",
@@ -241,7 +244,11 @@
       "updating": "Inasasisha...",
       "updatingCategory": "Inasasisha {{category}}"
     },
-    "categories": { "ACCOUNTING": "Uhasibu", "GENERAL": "Katalogi za jumla", "USERS": "Watumiaji" },
+    "categories": {
+      "ACCOUNTING": "Uhasibu",
+      "GENERAL": "Katalogi za jumla",
+      "USERS": "Watumiaji"
+    },
     "errors": {
       "alreadyRunning": "Usasishaji huu wa katalogi tayari unaendelea",
       "interrupted": "Usasishaji wa katalogi uliopita ulikatizwa. Tafadhali jaribu tena",
@@ -259,7 +266,10 @@
       "status": "Hali",
       "yes": "Ndiyo"
     },
-    "messages": { "loading": "Inapakia hali za usasishaji wa katalogi...", "success": "Katalogi zimesasishwa" },
+    "messages": {
+      "loading": "Inapakia hali za usasishaji wa katalogi...",
+      "success": "Katalogi zimesasishwa"
+    },
     "status": {
       "CURRENT": "Imesasishwa",
       "FAILED": "Usasishaji umeshindwa",
@@ -1293,7 +1303,8 @@
       "Convert": "Badilisha",
       "Deleting": "Inafuta",
       "Inactivate": "Zima",
-      "Discount Fee Adjustment": "Marekebisho ya Ada ya Punguzo"
+      "Discount Fee Adjustment": "Marekebisho ya Ada ya Punguzo",
+      "Calculate Schedule": "Calculate Schedule"
     },
     "catalogs": {
       "% Amount": "Kiasi",
@@ -2309,7 +2320,10 @@
       "Services": "Huduma",
       "Schedules": "Ratiba",
       "Reference": "Rejea",
-      "Create Savings Product": "Unda Bidhaa ya Akiba"
+      "Create Savings Product": "Unda Bidhaa ya Akiba",
+      "Loan Simulator": "Loan Simulator",
+      "Summary": "Summary",
+      "Repayment Schedule": "Repayment Schedule"
     },
     "inputs": {
       "Breach Start Type": "Aina ya kuanza kwa ukiukaji",
@@ -4393,7 +4407,11 @@
       "PERSON": "Mtu binafsi",
       "Payment": "Malipo",
       "Export Date": "Tarehe ya Kuhamisha",
-      "Label": "Lebo"
+      "Label": "Lebo",
+      "Total Repayment": "Total Repayment",
+      "Repayment Every": "Repayment Every",
+      "Repayment Frequency": "Repayment Frequency",
+      "is required": "is required"
     },
     "links": {
       "Community": "Jumuiya",
@@ -4551,7 +4569,8 @@
       "Link to payment system": "Unganisha kwenye mfumo wa malipo",
       "Interbank Transfer": "Uhamisho Baina ya Benki",
       "Reporting Dashboard": "Dashibodi ya Ripoti",
-      "Assign Staff": "Kabidhi Mfanyakazi"
+      "Assign Staff": "Kabidhi Mfanyakazi",
+      "Loan Simulator": "Loan Simulator"
     },
     "placeholders": {
       "Add new server": "Ongeza seva mpya",
@@ -5870,7 +5889,8 @@
       "Automated export": "Huu ni uhamishaji wa kiotomatiki kutoka Dashibodi ya Kimataifa ya Mifos X",
       "Discount Fee Adjustment": "Marekebisho ya Ada ya Punguzo",
       "Remaining discount fee available to adjust": "Ada ya punguzo iliyosalia inayoweza kurekebishwa",
-      "Cannot precede the discount fee date": "Haiwezi kutangulia tarehe ya ada ya punguzo"
+      "Cannot precede the discount fee date": "Haiwezi kutangulia tarehe ya ada ya punguzo",
+      "Loan Simulator": "Loan Simulator"
     },
     "permissions": {
       "actions": {
@@ -7162,7 +7182,10 @@
       "dateRange": "Tarehe ya kuanzia lazima iwe kabla au sawa na tarehe ya mwisho.",
       "referenceLength": "Rejeleo lisizidi herufi 200."
     },
-    "denominationTypes": { "BANKNOTE": "Noti", "COIN": "Sarafu" }
+    "denominationTypes": {
+      "BANKNOTE": "Noti",
+      "COIN": "Sarafu"
+    }
   },
   "enrollmentStatus": {
     "title": "Hali ya usajili",

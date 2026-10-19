@@ -39,12 +39,15 @@ export const environment = {
   version: env.mifos_x.version,
   hash: env.mifos_x.hash,
   // For connecting to server running elsewhere update the tenant identifier
-  fineractPlatformTenantId: loadedEnv['fineractPlatformTenantId'] || 'fac_pruebas',
-  fineractPlatformTenantIds: loadedEnv['fineractPlatformTenantIds'] || 'fac_pruebasdefault',
+  fineractPlatformTenantId: loadedEnv['fineractPlatformTenantId'] || 'default',
+  fineractPlatformTenantIds: loadedEnv['fineractPlatformTenantIds'] || 'default',
   // For connecting to others servers running elsewhere update the base API URL
-  baseApiUrls: window.location.origin,
+  baseApiUrls:
+    loadedEnv['fineractApiUrls'] || 'https://demo.mifos.community,https://localhost:8443,' + window.location.origin,
   // For connecting to server running elsewhere set the base API URL
-  baseApiUrl: window.location.origin,
+  baseApiUrl:
+    loadedEnv['fineractApiUrl'] ||
+    (loadedEnv['fineractApiUrls']?.length > 0 ? loadedEnv['fineractApiUrls'].split(',')[0] : window.location.origin),
   oauthServerUrl: loadedEnv['oauthServerUrl'] ?? (base && provider ? `${base}${provider}` : ''),
   allowServerSwitch: loadedEnv.allowServerSwitch || 'true',
   apiProvider: loadedEnv['apiProvider'] || '/fineract-provider/api',

@@ -6,14 +6,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-/**
- * Copyright since 2025 Mifos Initiative
- *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
-
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -28,6 +20,7 @@ import { RepaymentScheduleTabComponent } from '../loans-view/repayment-schedule-
 
 @Component({
   selector: 'mifosx-loan-simulator',
+  standalone: true,
   templateUrl: './loan-simulator.component.html',
   styleUrls: ['./loan-simulator.component.scss'],
   imports: [

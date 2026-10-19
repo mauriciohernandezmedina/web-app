@@ -1259,7 +1259,8 @@
       "Create Tenant": "Tenant yarat",
       "Test Connection": "Bağlantını yoxla",
       "Post Dividends": "Dividendləri hesaba yaz",
-      "Discount Fee Adjustment": "Endirim Haqqı Düzəlişi"
+      "Discount Fee Adjustment": "Endirim Haqqı Düzəlişi",
+      "Calculate Schedule": "Calculate Schedule"
     },
     "catalogs": {
       "% Amount": "Məbləğin %-i",
@@ -2275,7 +2276,10 @@
       "Configuration": "Konfiqurasiya",
       "Edit Charge Amount": "Haqqın məbləğini redaktə et",
       "Edit Charge Date": "Haqqın tarixini redaktə et",
-      "Edit Guarantor": "Zaminin məlumatlarını redaktə et"
+      "Edit Guarantor": "Zaminin məlumatlarını redaktə et",
+      "Loan Simulator": "Loan Simulator",
+      "Summary": "Summary",
+      "Repayment Schedule": "Repayment Schedule"
     },
     "inputs": {
       "Breach Start Type": "Pozuntunun başlanğıc növü",
@@ -4353,7 +4357,11 @@
       "On Hold Funds": "Bloklanmış vəsaitlər",
       "Payment": "Ödəniş",
       "Export Date": "İxrac tarixi",
-      "Label": "Etiket"
+      "Label": "Etiket",
+      "Total Repayment": "Total Repayment",
+      "Repayment Every": "Repayment Every",
+      "Repayment Frequency": "Repayment Frequency",
+      "is required": "is required"
     },
     "links": {
       "Community": "İcma",
@@ -4511,7 +4519,8 @@
       "Approve Additional Shares": "Əlavə payları təsdiqlə",
       "Reject Additional Shares": "Əlavə payları rədd et",
       "Manage Dashboards": "İdarə panellərini idarə et",
-      "Reporting Dashboard": "Hesabat paneli"
+      "Reporting Dashboard": "Hesabat paneli",
+      "Loan Simulator": "Loan Simulator"
     },
     "placeholders": {
       "# Remittance": "Pul köçürməsinin nömrəsi",
@@ -4682,7 +4691,7 @@
       "Active Savers": "Aktiv əmanətçilər",
       "Amount Collected": "Toplanmış məbləğ",
       "Amount must be greater than zero": "Məbləğ sıfırdan böyük olmalıdır",
-      "Base Teller": "Baza kassiri",
+      "Base Teller": "Əsas kassir",
       "Base Teller Savings Account Opening": "Əsas kassirin əmanət hesabının açılması",
       "Bill and Service Payment": "Hesab və xidmət ödənişi",
       "Georeference Map": "Coğrafi istinad xəritəsi",
@@ -4788,7 +4797,6 @@
       "Button for individual account": "Bu düymə fərdi hesablar, qruplar və mərkəzlər üçün istifadə ediləcək",
       "Buy Down Fees": "Faiz dərəcəsinin azaldılması haqları",
       "Cancel Pending Sale": "Gözləyən satışı ləğv et",
-      "Base Teller": "Əsas kassir",
       "Cash denomination total must equal the funding amount": "Nominal üzrə nağd pulun cəmi maliyyələşdirmə məbləğinə bərabər olmalıdır.",
       "Cash denomination total must equal the transaction amount": "Nominal üzrə nağd pulun cəmi əməliyyat məbləğinə bərabər olmalıdır.",
       "Cash received cannot be less than the check amount": "Alınmış nağd pul çek məbləğindən az ola bilməz.",
@@ -5831,7 +5839,8 @@
       "Automated export": "Bu məlumatlar Mifos X Qlobal İdarə Panelindən avtomatik ixrac edilib",
       "Discount Fee Adjustment": "Endirim Haqqı Düzəlişi",
       "Remaining discount fee available to adjust": "Düzəliş üçün mövcud qalan endirim haqqı",
-      "Cannot precede the discount fee date": "Endirim haqqı tarixindən əvvəl ola bilməz"
+      "Cannot precede the discount fee date": "Endirim haqqı tarixindən əvvəl ola bilməz",
+      "Loan Simulator": "Loan Simulator"
     },
     "permissions": {
       "actions": {
@@ -7115,7 +7124,10 @@
       "dateRange": "Başlanğıc tarixi son tarixdən əvvəl və ya ona bərabər olmalıdır.",
       "referenceLength": "İstinad 200 simvoldan çox olmamalıdır."
     },
-    "denominationTypes": { "BANKNOTE": "Əskinas", "COIN": "Sikkə" }
+    "denominationTypes": {
+      "BANKNOTE": "Əskinas",
+      "COIN": "Sikkə"
+    }
   },
   "enrollmentStatus": {
     "title": "Qəbulun vəziyyəti",

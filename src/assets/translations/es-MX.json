@@ -13,7 +13,10 @@
       "currency": "Moneda",
       "showLastCutOff": "Mostrar último corte"
     },
-    "types": { "CASH": "Efectivo", "CHECK": "Cheque" },
+    "types": {
+      "CASH": "Efectivo",
+      "CHECK": "Cheque"
+    },
     "columns": {
       "user": "Usuario / Custodio",
       "name": "Nombre",
@@ -241,7 +244,11 @@
       "updating": "Actualizando...",
       "updatingCategory": "Actualizando {{category}}"
     },
-    "categories": { "ACCOUNTING": "Contabilidad", "GENERAL": "Catálogos generales", "USERS": "Usuarios" },
+    "categories": {
+      "ACCOUNTING": "Contabilidad",
+      "GENERAL": "Catálogos generales",
+      "USERS": "Usuarios"
+    },
     "errors": {
       "alreadyRunning": "Esta actualización de catálogo ya está en curso",
       "interrupted": "La actualización anterior del catálogo fue interrumpida. Inténtalo de nuevo",
@@ -1296,7 +1303,8 @@
       "Convert": "Convertir",
       "Deleting": "Eliminando",
       "Inactivate": "Inactivar",
-      "Discount Fee Adjustment": "Ajuste de Comisión de Descuento"
+      "Discount Fee Adjustment": "Ajuste de Comisión de Descuento",
+      "Calculate Schedule": "Calcular Tabla de Amortización"
     },
     "catalogs": {
       "% Amount": "% Monto",
@@ -2312,7 +2320,10 @@
       "Customer and Account": "Cliente y cuenta",
       "Deposit Details": "Detalles del depósito",
       "Services": "Servicios",
-      "Schedules": "Horarios"
+      "Schedules": "Horarios",
+      "Loan Simulator": "Simulador de Préstamos",
+      "Summary": "Resumen",
+      "Repayment Schedule": "Tabla de Amortización"
     },
     "inputs": {
       "Breach Start Type": "Tipo de inicio de incumplimiento",
@@ -4390,7 +4401,11 @@
       "PERSON": "Persona física",
       "Payment": "Pago",
       "Export Date": "Fecha de exportación",
-      "Label": "Etiqueta"
+      "Label": "Etiqueta",
+      "Total Repayment": "Pago Total Esperado",
+      "Repayment Every": "Reembolsos cada",
+      "Repayment Frequency": "Frecuencia de Reembolso",
+      "is required": "es requerido"
     },
     "links": {
       "Community": "Comunidad",
@@ -4548,7 +4563,8 @@
       "Global Financial Dashboard": "Panel Financiero Global",
       "Manage Dashboards": "Gestionar Paneles de Control",
       "Interbank Transfer": "Transferencia interbancaria",
-      "Reporting Dashboard": "Panel de reportes"
+      "Reporting Dashboard": "Panel de reportes",
+      "Loan Simulator": "Simulador de Préstamos"
     },
     "placeholders": {
       "# Remittance": "# Remesa",
@@ -5867,7 +5883,8 @@
       "Automated export": "Esta es una exportación automática del panel global de Mifos X",
       "Discount Fee Adjustment": "Ajuste de Comisión de Descuento",
       "Remaining discount fee available to adjust": "Comisión de descuento disponible para ajustar",
-      "Cannot precede the discount fee date": "No puede ser anterior a la fecha de la comisión de descuento"
+      "Cannot precede the discount fee date": "No puede ser anterior a la fecha de la comisión de descuento",
+      "Loan Simulator": "Simulador de Préstamos"
     },
     "permissions": {
       "actions": {
@@ -7159,7 +7176,10 @@
       "dateRange": "Fecha desde debe ser anterior o igual a Fecha hasta.",
       "referenceLength": "La referencia no debe superar los 200 caracteres."
     },
-    "denominationTypes": { "BANKNOTE": "Billete", "COIN": "Moneda" }
+    "denominationTypes": {
+      "BANKNOTE": "Billete",
+      "COIN": "Moneda"
+    }
   },
   "enrollmentStatus": {
     "title": "Estado de enrolamiento",

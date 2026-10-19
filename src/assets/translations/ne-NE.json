@@ -13,7 +13,10 @@
       "currency": "मुद्रा",
       "showLastCutOff": "पछिल्लो बन्द देखाउनुहोस्"
     },
-    "types": { "CASH": "नगद", "CHECK": "चेक" },
+    "types": {
+      "CASH": "नगद",
+      "CHECK": "चेक"
+    },
     "columns": {
       "user": "प्रयोगकर्ता / जिम्मेवार व्यक्ति",
       "name": "नाम",
@@ -241,7 +244,11 @@
       "updating": "अद्यावधिक हुँदैछ...",
       "updatingCategory": "{{category}} अद्यावधिक हुँदैछ"
     },
-    "categories": { "ACCOUNTING": "लेखा", "GENERAL": "सामान्य क्याटलगहरू", "USERS": "प्रयोगकर्ताहरू" },
+    "categories": {
+      "ACCOUNTING": "लेखा",
+      "GENERAL": "सामान्य क्याटलगहरू",
+      "USERS": "प्रयोगकर्ताहरू"
+    },
     "errors": {
       "alreadyRunning": "यो क्याटलग अद्यावधिक पहिले नै चलिरहेको छ",
       "interrupted": "अघिल्लो क्याटलग अद्यावधिक अवरुद्ध भयो। पुन: प्रयास गर्नुहोस्",
@@ -1296,7 +1303,8 @@
       "Convert": "रूपान्तरण गर्नुहोस्",
       "Deleting": "मेटाउँदै",
       "Inactivate": "निष्क्रिय पार्नुहोस्",
-      "Discount Fee Adjustment": "छुट शुल्क समायोजन"
+      "Discount Fee Adjustment": "छुट शुल्क समायोजन",
+      "Calculate Schedule": "Calculate Schedule"
     },
     "catalogs": {
       "% Amount": "रकम",
@@ -2312,7 +2320,10 @@
       "Deposit Details": "निक्षेप विवरण",
       "Services": "सेवाहरू",
       "Schedules": "तालिकाहरू",
-      "Reference": "सन्दर्भ"
+      "Reference": "सन्दर्भ",
+      "Loan Simulator": "Loan Simulator",
+      "Summary": "Summary",
+      "Repayment Schedule": "Repayment Schedule"
     },
     "inputs": {
       "Breach Start Type": "उल्लङ्घन सुरु प्रकार",
@@ -4396,7 +4407,11 @@
       "PERSON": "व्यक्ति",
       "Payment": "भुक्तानी",
       "Export Date": "निर्यात मिति",
-      "Label": "लेबल"
+      "Label": "लेबल",
+      "Total Repayment": "Total Repayment",
+      "Repayment Every": "Repayment Every",
+      "Repayment Frequency": "Repayment Frequency",
+      "is required": "is required"
     },
     "links": {
       "Community": "समुदाय",
@@ -4554,7 +4569,8 @@
       "Manage Dashboards": "ड्यासबोर्डहरू प्रबन्ध गर्नुहोस्",
       "Link to payment system": "भुक्तानी प्रणालीमा लिंक गर्नुहोस्",
       "Interbank Transfer": "अन्तर-बैंक स्थानान्तरण",
-      "Reporting Dashboard": "प्रतिवेदन ड्यासबोर्ड"
+      "Reporting Dashboard": "प्रतिवेदन ड्यासबोर्ड",
+      "Loan Simulator": "Loan Simulator"
     },
     "placeholders": {
       "Add new server": "नयाँ सर्भर थप्नुहोस्",
@@ -5873,7 +5889,8 @@
       "Automated export": "यो Mifos X ग्लोबल ड्यासबोर्डबाट स्वचालित निर्यात हो",
       "Discount Fee Adjustment": "छुट शुल्क समायोजन",
       "Remaining discount fee available to adjust": "समायोजन गर्न उपलब्ध बाँकी छुट शुल्क",
-      "Cannot precede the discount fee date": "छुट शुल्क मितिभन्दा अघिको हुन सक्दैन"
+      "Cannot precede the discount fee date": "छुट शुल्क मितिभन्दा अघिको हुन सक्दैन",
+      "Loan Simulator": "Loan Simulator"
     },
     "permissions": {
       "actions": {
@@ -7165,7 +7182,10 @@
       "dateRange": "सुरु मिति अन्त्य मितिभन्दा अघि वा बराबर हुनुपर्छ।",
       "referenceLength": "सन्दर्भ २०० अक्षरभन्दा बढी हुनु हुँदैन।"
     },
-    "denominationTypes": { "BANKNOTE": "नोट", "COIN": "सिक्का" }
+    "denominationTypes": {
+      "BANKNOTE": "नोट",
+      "COIN": "सिक्का"
+    }
   },
   "enrollmentStatus": {
     "title": "दर्ता स्थिति",

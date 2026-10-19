@@ -13,7 +13,10 @@
       "currency": "Valiuta",
       "showLastCutOff": "Rodyti paskutinį uždarymą"
     },
-    "types": { "CASH": "Grynieji", "CHECK": "Čekis" },
+    "types": {
+      "CASH": "Grynieji",
+      "CHECK": "Čekis"
+    },
     "columns": {
       "user": "Naudotojas / Saugotojas",
       "name": "Pavadinimas",
@@ -241,7 +244,11 @@
       "updating": "Atnaujinama...",
       "updatingCategory": "Atnaujinama: {{category}}"
     },
-    "categories": { "ACCOUNTING": "Apskaita", "GENERAL": "Bendrieji katalogai", "USERS": "Naudotojai" },
+    "categories": {
+      "ACCOUNTING": "Apskaita",
+      "GENERAL": "Bendrieji katalogai",
+      "USERS": "Naudotojai"
+    },
     "errors": {
       "alreadyRunning": "Šis katalogo atnaujinimas jau vykdomas",
       "interrupted": "Ankstesnis katalogo atnaujinimas buvo nutrauktas. Bandykite dar kartą",
@@ -259,7 +266,10 @@
       "status": "Būsena",
       "yes": "Taip"
     },
-    "messages": { "loading": "Įkeliamos katalogų atnaujinimo būsenos...", "success": "Katalogai atnaujinti" },
+    "messages": {
+      "loading": "Įkeliamos katalogų atnaujinimo būsenos...",
+      "success": "Katalogai atnaujinti"
+    },
     "status": {
       "CURRENT": "Atnaujinta",
       "FAILED": "Atnaujinti nepavyko",
@@ -1293,7 +1303,8 @@
       "Convert": "Konvertuoti",
       "Deleting": "Šalinama",
       "Inactivate": "Deaktyvuoti",
-      "Discount Fee Adjustment": "Nuolaidos mokesčio koregavimas"
+      "Discount Fee Adjustment": "Nuolaidos mokesčio koregavimas",
+      "Calculate Schedule": "Calculate Schedule"
     },
     "catalogs": {
       "% Amount": "Suma",
@@ -2309,7 +2320,10 @@
       "Deposit Details": "Indėlio informacija",
       "Services": "Paslaugos",
       "Schedules": "Tvarkaraščiai",
-      "Reference": "Nuoroda"
+      "Reference": "Nuoroda",
+      "Loan Simulator": "Loan Simulator",
+      "Summary": "Summary",
+      "Repayment Schedule": "Repayment Schedule"
     },
     "inputs": {
       "Breach Start Type": "Pažeidimo pradžios tipas",
@@ -4393,7 +4407,11 @@
       "PERSON": "Fizinis asmuo",
       "Payment": "Mokėjimas",
       "Export Date": "Eksporto data",
-      "Label": "Etiketė"
+      "Label": "Etiketė",
+      "Total Repayment": "Total Repayment",
+      "Repayment Every": "Repayment Every",
+      "Repayment Frequency": "Repayment Frequency",
+      "is required": "is required"
     },
     "links": {
       "Community": "bendruomenė",
@@ -4551,7 +4569,8 @@
       "Manage Dashboards": "Valdyti prietaisų skydelius",
       "Link to payment system": "Susieti su mokėjimo sistema",
       "Interbank Transfer": "Tarpbankinis pervedimas",
-      "Reporting Dashboard": "Ataskaitų skydelis"
+      "Reporting Dashboard": "Ataskaitų skydelis",
+      "Loan Simulator": "Loan Simulator"
     },
     "placeholders": {
       "Add new server": "Pridėti naują serverį",
@@ -5870,7 +5889,8 @@
       "Automated export": "Tai automatinis eksportas iš „Mifos X“ visuotinio skydelio",
       "Discount Fee Adjustment": "Nuolaidos mokesčio koregavimas",
       "Remaining discount fee available to adjust": "Likęs nuolaidos mokestis, kurį galima koreguoti",
-      "Cannot precede the discount fee date": "Negali būti ankstesnė nei nuolaidos mokesčio data"
+      "Cannot precede the discount fee date": "Negali būti ankstesnė nei nuolaidos mokesčio data",
+      "Loan Simulator": "Loan Simulator"
     },
     "permissions": {
       "actions": {
@@ -7162,7 +7182,10 @@
       "dateRange": "Data nuo turi būti ankstesnė arba lygi datai iki.",
       "referenceLength": "Nuoroda negali būti ilgesnė nei 200 simbolių."
     },
-    "denominationTypes": { "BANKNOTE": "Banknotas", "COIN": "Moneta" }
+    "denominationTypes": {
+      "BANKNOTE": "Banknotas",
+      "COIN": "Moneta"
+    }
   },
   "enrollmentStatus": {
     "title": "Registracijos būsena",

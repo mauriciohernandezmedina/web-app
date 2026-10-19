@@ -19,23 +19,20 @@ const { HttpsProxyAgent } = require('https-proxy-agent');
 const proxyConfig = [
   {
     context: ['/fineract-provider'],
-    target: 'https://40.233.30.9',
+    target: 'https://demo.mifos.community',
     changeOrigin: true,
-    secure: false,
+    secure: true,
     logLevel: 'debug',
     on: {
       proxyReq: function (proxyReq, req, res) {
-        // CRÍTICO para Codespaces: Evita que Spring Security en Fineract devuelva 400 por Origin externo
-        proxyReq.setHeader('Origin', 'https://40.233.30.9');
-        proxyReq.setHeader('Referer', 'https://40.233.30.9/');
-        console.log('[Proxy] Proxying:', req.method, req.url, '->', 'https://40.233.30.9' + req.url);
+        console.log('[Proxy] Proxying:', req.method, req.url, '->', 'https://demo.mifos.community' + req.url);
       },
       error: function (err, req, res) {
         console.error(
           '[Proxy] Error while proxying request:',
           req && req.method,
           req && req.url,
-          '-> https://40.233.30.9 -',
+          '-> https://demo.mifos.community -',
           err && err.message
         );
         if (res && !res.headersSent) {

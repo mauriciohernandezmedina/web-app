@@ -13,7 +13,10 @@
       "currency": "Valūta",
       "showLastCutOff": "Rādīt pēdējo slēgšanu"
     },
-    "types": { "CASH": "Skaidra nauda", "CHECK": "Čeks" },
+    "types": {
+      "CASH": "Skaidra nauda",
+      "CHECK": "Čeks"
+    },
     "columns": {
       "user": "Lietotājs / Glabātājs",
       "name": "Nosaukums",
@@ -241,7 +244,11 @@
       "updating": "Atjaunina...",
       "updatingCategory": "Atjaunina {{category}}"
     },
-    "categories": { "ACCOUNTING": "Grāmatvedība", "GENERAL": "Vispārīgie katalogi", "USERS": "Lietotāji" },
+    "categories": {
+      "ACCOUNTING": "Grāmatvedība",
+      "GENERAL": "Vispārīgie katalogi",
+      "USERS": "Lietotāji"
+    },
     "errors": {
       "alreadyRunning": "Šī kataloga atjaunināšana jau notiek",
       "interrupted": "Iepriekšējā kataloga atjaunināšana tika pārtraukta. Mēģiniet vēlreiz",
@@ -259,7 +266,10 @@
       "status": "Statuss",
       "yes": "Jā"
     },
-    "messages": { "loading": "Ielādē katalogu atjaunināšanas statusus...", "success": "Katalogi ir atjaunināti" },
+    "messages": {
+      "loading": "Ielādē katalogu atjaunināšanas statusus...",
+      "success": "Katalogi ir atjaunināti"
+    },
     "status": {
       "CURRENT": "Aktuāls",
       "FAILED": "Atjaunināšana neizdevās",
@@ -1293,7 +1303,8 @@
       "Convert": "Konvertēt",
       "Deleting": "Dzēš",
       "Inactivate": "Deaktivizēt",
-      "Discount Fee Adjustment": "Atlaides maksas korekcija"
+      "Discount Fee Adjustment": "Atlaides maksas korekcija",
+      "Calculate Schedule": "Calculate Schedule"
     },
     "catalogs": {
       "% Amount": "Summa",
@@ -2309,7 +2320,10 @@
       "Deposit Details": "Noguldījuma informācija",
       "Services": "Pakalpojumi",
       "Schedules": "Grafiki",
-      "Reference": "Atsauce"
+      "Reference": "Atsauce",
+      "Loan Simulator": "Loan Simulator",
+      "Summary": "Summary",
+      "Repayment Schedule": "Repayment Schedule"
     },
     "inputs": {
       "Breach Start Type": "Pārkāpuma sākuma tips",
@@ -4393,7 +4407,11 @@
       "PERSON": "Fiziska persona",
       "Payment": "Maksājums",
       "Export Date": "Eksporta datums",
-      "Label": "Nosaukums"
+      "Label": "Nosaukums",
+      "Total Repayment": "Total Repayment",
+      "Repayment Every": "Repayment Every",
+      "Repayment Frequency": "Repayment Frequency",
+      "is required": "is required"
     },
     "links": {
       "Community": "kopiena",
@@ -4551,7 +4569,8 @@
       "Link to payment system": "Saistīt ar maksājumu sistēmu",
       "Interbank Transfer": "Starpbanku pārskaitījums",
       "Reporting Dashboard": "Pārskatu panelis",
-      "Assign Staff": "Piešķirt darbinieku"
+      "Assign Staff": "Piešķirt darbinieku",
+      "Loan Simulator": "Loan Simulator"
     },
     "placeholders": {
       "Add new server": "Pievienot jaunu serveri",
@@ -5870,7 +5889,8 @@
       "Automated export": "Šis ir automātisks eksports no Mifos X globālā paneļa",
       "Discount Fee Adjustment": "Atlaides maksas korekcija",
       "Remaining discount fee available to adjust": "Atlikusī atlaides maksa, ko var koriģēt",
-      "Cannot precede the discount fee date": "Nedrīkst būt pirms atlaides maksas datuma"
+      "Cannot precede the discount fee date": "Nedrīkst būt pirms atlaides maksas datuma",
+      "Loan Simulator": "Loan Simulator"
     },
     "permissions": {
       "actions": {
@@ -7162,7 +7182,10 @@
       "dateRange": "Datumam no jābūt pirms datuma līdz vai vienādam ar to.",
       "referenceLength": "Atsauce nedrīkst pārsniegt 200 rakstzīmes."
     },
-    "denominationTypes": { "BANKNOTE": "Banknote", "COIN": "Monēta" }
+    "denominationTypes": {
+      "BANKNOTE": "Banknote",
+      "COIN": "Monēta"
+    }
   },
   "enrollmentStatus": {
     "title": "Reģistrācijas statuss",

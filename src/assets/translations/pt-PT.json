@@ -13,7 +13,10 @@
       "currency": "Moeda",
       "showLastCutOff": "Mostrar último fecho"
     },
-    "types": { "CASH": "Numerário", "CHECK": "Cheque" },
+    "types": {
+      "CASH": "Numerário",
+      "CHECK": "Cheque"
+    },
     "columns": {
       "user": "Utilizador / Custodiante",
       "name": "Nome",
@@ -241,7 +244,11 @@
       "updating": "A atualizar...",
       "updatingCategory": "A atualizar {{category}}"
     },
-    "categories": { "ACCOUNTING": "Contabilidade", "GENERAL": "Catálogos gerais", "USERS": "Utilizadores" },
+    "categories": {
+      "ACCOUNTING": "Contabilidade",
+      "GENERAL": "Catálogos gerais",
+      "USERS": "Utilizadores"
+    },
     "errors": {
       "alreadyRunning": "Esta atualização de catálogo já está em curso",
       "interrupted": "A atualização anterior do catálogo foi interrompida. Tente novamente",
@@ -1296,7 +1303,8 @@
       "Convert": "Converter",
       "Deleting": "A eliminar",
       "Inactivate": "Inativar",
-      "Discount Fee Adjustment": "Ajuste da Taxa de Desconto"
+      "Discount Fee Adjustment": "Ajuste da Taxa de Desconto",
+      "Calculate Schedule": "Calculate Schedule"
     },
     "catalogs": {
       "% Amount": "Quantia",
@@ -2312,7 +2320,10 @@
       "Services": "Serviços",
       "Schedules": "Horários",
       "Reference": "Referência",
-      "Create Savings Product": "Criar produto de poupança"
+      "Create Savings Product": "Criar produto de poupança",
+      "Loan Simulator": "Loan Simulator",
+      "Summary": "Summary",
+      "Repayment Schedule": "Repayment Schedule"
     },
     "inputs": {
       "Breach Start Type": "Tipo de início de violação",
@@ -4396,7 +4407,11 @@
       "PERSON": "Pessoa singular",
       "Payment": "Pagamento",
       "Export Date": "Data de exportação",
-      "Label": "Rótulo"
+      "Label": "Rótulo",
+      "Total Repayment": "Total Repayment",
+      "Repayment Every": "Repayment Every",
+      "Repayment Frequency": "Repayment Frequency",
+      "is required": "is required"
     },
     "links": {
       "Community": "Comunidade",
@@ -4554,7 +4569,8 @@
       "Manage Dashboards": "Gerenciar Painéis",
       "Link to payment system": "Ligar ao sistema de pagamentos",
       "Interbank Transfer": "Transferência interbancária",
-      "Reporting Dashboard": "Painel de relatórios"
+      "Reporting Dashboard": "Painel de relatórios",
+      "Loan Simulator": "Loan Simulator"
     },
     "placeholders": {
       "Add new server": "Adicionar novo servidor",
@@ -5873,7 +5889,8 @@
       "Automated export": "Esta é uma exportação automática do painel global do Mifos X",
       "Discount Fee Adjustment": "Ajuste da Taxa de Desconto",
       "Remaining discount fee available to adjust": "Taxa de desconto restante disponível para ajuste",
-      "Cannot precede the discount fee date": "Não pode ser anterior à data da taxa de desconto"
+      "Cannot precede the discount fee date": "Não pode ser anterior à data da taxa de desconto",
+      "Loan Simulator": "Loan Simulator"
     },
     "permissions": {
       "actions": {
@@ -7165,7 +7182,10 @@
       "dateRange": "A data inicial deve ser anterior ou igual à data final.",
       "referenceLength": "A referência não pode exceder 200 caracteres."
     },
-    "denominationTypes": { "BANKNOTE": "Nota", "COIN": "Moeda" }
+    "denominationTypes": {
+      "BANKNOTE": "Nota",
+      "COIN": "Moeda"
+    }
   },
   "enrollmentStatus": {
     "title": "Estado da inscrição",
