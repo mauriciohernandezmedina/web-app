@@ -17,8 +17,8 @@
   window["env"]["apiVersion"] = '';
   window["env"]["apiActuator"] = '';
 
-  window["env"]["fineractPlatformTenantId"] = '';
-  window["env"]["fineractPlatformTenantIds"] = '';
+  window["env"]["fineractPlatformTenantId"] = 'fac_pruebas';
+  window["env"]["fineractPlatformTenantIds"] = 'fac_pruebas,default';
 
   window['env']['tenantLogoUrl'] = '';
   window['env']['tenantLogoUrlDark'] = '';
