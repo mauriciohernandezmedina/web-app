@@ -1,29 +1,38 @@
 {
-  "name": "Mifos X Web App Dev",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-20-bookworm",
+  "name": "Mifos X Web App (Node 24)",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "24.16.0",
+      "nodeGypDependencies": true
+    }
+  },
   "hostRequirements": {
     "cpus": 4,
     "memory": "8gb",
     "storage": "32gb"
   },
   "containerEnv": {
-    "NODE_OPTIONS": "--max_old_space_size=4096"
+    "NODE_OPTIONS": "--max-old-space-size=6144",
+    "PUPPETEER_SKIP_DOWNLOAD": "true",
+    "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": "1"
   },
   "forwardPorts": [4200],
   "portsAttributes": {
     "4200": {
       "label": "Mifos X Web UI",
-      "onAutoForward": "notify",
+      "onAutoForward": "openPreview",
       "protocol": "http"
     }
   },
-  "postCreateCommand": "npm ci --legacy-peer-deps",
+  "postCreateCommand": "npm ci",
   "customizations": {
     "vscode": {
       "extensions": [
         "Angular.ng-template",
         "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "stylelint.vscode-stylelint"
       ]
     }
   }
