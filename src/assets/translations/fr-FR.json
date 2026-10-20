@@ -13,7 +13,10 @@
       "currency": "Devise",
       "showLastCutOff": "Afficher la dernière clôture"
     },
-    "types": { "CASH": "Espèces", "CHECK": "Chèque" },
+    "types": {
+      "CASH": "Espèces",
+      "CHECK": "Chèque"
+    },
     "columns": {
       "user": "Utilisateur / Dépositaire",
       "name": "Nom",
@@ -241,7 +244,11 @@
       "updating": "Mise à jour...",
       "updatingCategory": "Mise à jour de {{category}}"
     },
-    "categories": { "ACCOUNTING": "Comptabilité", "GENERAL": "Catalogues généraux", "USERS": "Utilisateurs" },
+    "categories": {
+      "ACCOUNTING": "Comptabilité",
+      "GENERAL": "Catalogues généraux",
+      "USERS": "Utilisateurs"
+    },
     "errors": {
       "alreadyRunning": "Cette mise à jour du catalogue est déjà en cours",
       "interrupted": "La mise à jour précédente du catalogue a été interrompue. Veuillez réessayer",
@@ -1296,7 +1303,8 @@
       "Convert": "Convertir",
       "Deleting": "Suppression",
       "Inactivate": "Désactiver",
-      "Discount Fee Adjustment": "Ajustement des frais de remise"
+      "Discount Fee Adjustment": "Ajustement des frais de remise",
+      "Calculate Schedule": "Calculate Schedule"
     },
     "catalogs": {
       "% Amount": "Montant",
@@ -2312,7 +2320,10 @@
       "Deposit Details": "Détails du dépôt",
       "Services": "Services",
       "Schedules": "Horaires",
-      "Reference": "Référence"
+      "Reference": "Référence",
+      "Loan Simulator": "Loan Simulator",
+      "Summary": "Summary",
+      "Repayment Schedule": "Repayment Schedule"
     },
     "inputs": {
       "Breach Start Type": "Type de début de manquement",
@@ -4396,7 +4407,11 @@
       "PERSON": "Personne physique",
       "Payment": "Paiement",
       "Export Date": "Date d'export",
-      "Label": "Libellé"
+      "Label": "Libellé",
+      "Total Repayment": "Total Repayment",
+      "Repayment Every": "Repayment Every",
+      "Repayment Frequency": "Repayment Frequency",
+      "is required": "is required"
     },
     "links": {
       "Community": "Communauté",
@@ -4554,7 +4569,8 @@
       "Manage Dashboards": "Gérer les tableaux de bord",
       "Link to payment system": "Lier au système de paiement",
       "Interbank Transfer": "Virement interbancaire",
-      "Reporting Dashboard": "Tableau de bord des rapports"
+      "Reporting Dashboard": "Tableau de bord des rapports",
+      "Loan Simulator": "Loan Simulator"
     },
     "placeholders": {
       "Add new server": "Ajouter un nouveau serveur",
@@ -5873,7 +5889,8 @@
       "Automated export": "Ceci est un export automatique du tableau de bord global Mifos X",
       "Discount Fee Adjustment": "Ajustement des frais de remise",
       "Remaining discount fee available to adjust": "Frais de remise restants pouvant être ajustés",
-      "Cannot precede the discount fee date": "Ne peut pas précéder la date des frais de remise"
+      "Cannot precede the discount fee date": "Ne peut pas précéder la date des frais de remise",
+      "Loan Simulator": "Loan Simulator"
     },
     "permissions": {
       "actions": {
@@ -7165,7 +7182,10 @@
       "dateRange": "La date de début doit être antérieure ou égale à la date de fin.",
       "referenceLength": "La référence ne doit pas dépasser 200 caractères."
     },
-    "denominationTypes": { "BANKNOTE": "Billet", "COIN": "Pièce" }
+    "denominationTypes": {
+      "BANKNOTE": "Billet",
+      "COIN": "Pièce"
+    }
   },
   "enrollmentStatus": {
     "title": "Statut d'inscription",

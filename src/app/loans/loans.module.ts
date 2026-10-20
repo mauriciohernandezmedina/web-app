@@ -91,6 +91,7 @@ import { LoanReamortizeComponent } from './loans-view/loan-account-actions/loan-
 import { LoanTermVariationsTabComponent } from './loans-view/loan-term-variations-tab/loan-term-variations-tab.component';
 import { AddInterestPauseComponent } from './loans-view/loan-account-actions/add-interest-pause/add-interest-pause.component';
 import { LoansActiveClientMembersComponent } from './loans-account-stepper/loans-active-client-members/loans-active-client-members.component';
+import { LoanSimulatorComponent } from './loan-simulator/loan-simulator.component';
 
 /**
  * Loans Module
@@ -175,7 +176,8 @@ import { LoansActiveClientMembersComponent } from './loans-account-stepper/loans
     LoanReamortizeComponent,
     LoanTermVariationsTabComponent,
     AddInterestPauseComponent,
-    LoansActiveClientMembersComponent
+    LoansActiveClientMembersComponent,
+    LoanSimulatorComponent
   ],
   providers: []
 })

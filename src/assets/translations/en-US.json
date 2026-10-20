@@ -13,7 +13,10 @@
       "currency": "Currency",
       "showLastCutOff": "Show Last Cut-off"
     },
-    "types": { "CASH": "Cash", "CHECK": "Check" },
+    "types": {
+      "CASH": "Cash",
+      "CHECK": "Check"
+    },
     "columns": {
       "user": "User / Custodian",
       "name": "Name",
@@ -241,7 +244,11 @@
       "updating": "Updating...",
       "updatingCategory": "Updating {{category}}"
     },
-    "categories": { "ACCOUNTING": "Accounting", "GENERAL": "General Catalogs", "USERS": "Users" },
+    "categories": {
+      "ACCOUNTING": "Accounting",
+      "GENERAL": "General Catalogs",
+      "USERS": "Users"
+    },
     "errors": {
       "alreadyRunning": "This catalog update is already running",
       "interrupted": "The previous catalog update was interrupted. Please retry",
@@ -259,7 +266,10 @@
       "status": "Status",
       "yes": "Yes"
     },
-    "messages": { "loading": "Loading catalog update statuses...", "success": "The catalogs have been updated" },
+    "messages": {
+      "loading": "Loading catalog update statuses...",
+      "success": "The catalogs have been updated"
+    },
     "status": {
       "CURRENT": "Current",
       "FAILED": "Update Failed",
@@ -1295,7 +1305,8 @@
       "Create Tenant": "Create Tenant",
       "Test Connection": "Test Connection",
       "Post Dividends": "Post Dividends",
-      "Discount Fee Adjustment": "Discount Fee Adjustment"
+      "Discount Fee Adjustment": "Discount Fee Adjustment",
+      "Calculate Schedule": "Calculate Schedule"
     },
     "catalogs": {
       "% Amount": "% Amount",
@@ -2311,7 +2322,10 @@
       "Configuration": "Configuration",
       "Edit Charge Amount": "Edit Charge Amount",
       "Edit Charge Date": "Edit Charge Date",
-      "Edit Guarantor": "Edit Guarantor"
+      "Edit Guarantor": "Edit Guarantor",
+      "Loan Simulator": "Loan Simulator",
+      "Summary": "Summary",
+      "Repayment Schedule": "Repayment Schedule"
     },
     "inputs": {
       "Breach Start Type": "Breach Start Type",
@@ -4389,7 +4403,11 @@
       "On Hold Funds": "On Hold Funds",
       "Payment": "Payment",
       "Export Date": "Export Date",
-      "Label": "Label"
+      "Label": "Label",
+      "Total Repayment": "Total Repayment",
+      "Repayment Every": "Repayment Every",
+      "Repayment Frequency": "Repayment Frequency",
+      "is required": "is required"
     },
     "links": {
       "Community": "Community",
@@ -4547,7 +4565,8 @@
       "Approve Additional Shares": "Approve Additional Shares",
       "Reject Additional Shares": "Reject Additional Shares",
       "Manage Dashboards": "Manage Dashboards",
-      "Reporting Dashboard": "Reporting Dashboard"
+      "Reporting Dashboard": "Reporting Dashboard",
+      "Loan Simulator": "Loan Simulator"
     },
     "placeholders": {
       "# Remittance": "# Remittance",
@@ -4828,7 +4847,6 @@
       "Cancel Pending Sale": "Cancel Pending Sale",
       "Cash denomination total must equal the funding amount": "Cash denomination total must equal the funding amount.",
       "Cash denomination total must equal the transaction amount": "Cash denomination total must equal the transaction amount.",
-      "Base Teller": "Base Teller",
       "Cash received cannot be less than the check amount": "Cash received cannot be less than the check amount.",
       "Cashier Transactions": "Cashier Transactions",
       "Cashiers": "Cashiers",
@@ -5867,7 +5885,8 @@
       "Automated export": "This is an automated export from Mifos X Global Dashboard",
       "Discount Fee Adjustment": "Discount Fee Adjustment",
       "Remaining discount fee available to adjust": "Remaining discount fee available to adjust",
-      "Cannot precede the discount fee date": "Cannot precede the discount fee date"
+      "Cannot precede the discount fee date": "Cannot precede the discount fee date",
+      "Loan Simulator": "Loan Simulator"
     },
     "permissions": {
       "actions": {

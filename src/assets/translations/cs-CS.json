@@ -13,7 +13,10 @@
       "currency": "Měna",
       "showLastCutOff": "Zobrazit poslední uzávěrku"
     },
-    "types": { "CASH": "Hotovost", "CHECK": "Šek" },
+    "types": {
+      "CASH": "Hotovost",
+      "CHECK": "Šek"
+    },
     "columns": {
       "user": "Uživatel / Správce",
       "name": "Název",
@@ -241,7 +244,11 @@
       "updating": "Aktualizace...",
       "updatingCategory": "Aktualizuje se: {{category}}"
     },
-    "categories": { "ACCOUNTING": "Účetnictví", "GENERAL": "Obecné katalogy", "USERS": "Uživatelé" },
+    "categories": {
+      "ACCOUNTING": "Účetnictví",
+      "GENERAL": "Obecné katalogy",
+      "USERS": "Uživatelé"
+    },
     "errors": {
       "alreadyRunning": "Tato aktualizace katalogu již probíhá",
       "interrupted": "Předchozí aktualizace katalogu byla přerušena. Zkuste to znovu",
@@ -259,7 +266,10 @@
       "status": "Stav",
       "yes": "Ano"
     },
-    "messages": { "loading": "Načítají se stavy aktualizací katalogů...", "success": "Katalogy byly aktualizovány" },
+    "messages": {
+      "loading": "Načítají se stavy aktualizací katalogů...",
+      "success": "Katalogy byly aktualizovány"
+    },
     "status": {
       "CURRENT": "Aktuální",
       "FAILED": "Aktualizace se nezdařila",
@@ -1294,7 +1304,8 @@
       "Convert": "Převést",
       "Deleting": "Mazání",
       "Inactivate": "Deaktivovat",
-      "Discount Fee Adjustment": "Úprava poplatku za slevu"
+      "Discount Fee Adjustment": "Úprava poplatku za slevu",
+      "Calculate Schedule": "Calculate Schedule"
     },
     "catalogs": {
       "% Amount": "% částky",
@@ -2310,7 +2321,10 @@
       "Customer and Account": "Klient a účet",
       "Deposit Details": "Podrobnosti vkladu",
       "Services": "Služby",
-      "Schedules": "Rozvrhy"
+      "Schedules": "Rozvrhy",
+      "Loan Simulator": "Loan Simulator",
+      "Summary": "Summary",
+      "Repayment Schedule": "Repayment Schedule"
     },
     "inputs": {
       "Breach Start Type": "Typ začátku porušení",
@@ -4394,7 +4408,11 @@
       "PERSON": "Fyzická osoba",
       "Payment": "Platba",
       "Export Date": "Datum exportu",
-      "Label": "Popisek"
+      "Label": "Popisek",
+      "Total Repayment": "Total Repayment",
+      "Repayment Every": "Repayment Every",
+      "Repayment Frequency": "Repayment Frequency",
+      "is required": "is required"
     },
     "links": {
       "Community": "Společenství",
@@ -4552,7 +4570,8 @@
       "Manage Dashboards": "Spravovat ovládací panely",
       "Link to payment system": "Propojit s platebním systémem",
       "Interbank Transfer": "Mezibankovní převod",
-      "Reporting Dashboard": "Přehled hlášení"
+      "Reporting Dashboard": "Přehled hlášení",
+      "Loan Simulator": "Loan Simulator"
     },
     "placeholders": {
       "Add new server": "Přidat nový server",
@@ -5871,7 +5890,8 @@
       "Automated export": "Toto je automatický export z globálního přehledu Mifos X",
       "Discount Fee Adjustment": "Úprava poplatku za slevu",
       "Remaining discount fee available to adjust": "Zbývající poplatek za slevu k úpravě",
-      "Cannot precede the discount fee date": "Nesmí předcházet datu poplatku za slevu"
+      "Cannot precede the discount fee date": "Nesmí předcházet datu poplatku za slevu",
+      "Loan Simulator": "Loan Simulator"
     },
     "permissions": {
       "actions": {
@@ -7164,7 +7184,10 @@
       "dateRange": "Datum od musí být dřívější nebo stejné jako datum do.",
       "referenceLength": "Reference nesmí překročit 200 znaků."
     },
-    "denominationTypes": { "BANKNOTE": "Bankovka", "COIN": "Mince" }
+    "denominationTypes": {
+      "BANKNOTE": "Bankovka",
+      "COIN": "Mince"
+    }
   },
   "enrollmentStatus": {
     "title": "Stav registrace",

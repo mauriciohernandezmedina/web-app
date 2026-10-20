@@ -1,0 +1,237 @@
+<!--
+  Copyright since 2025 Mifos Initiative
+
+  This Source Code Form is subject to the terms of the Mozilla Public
+  License, v. 2.0. If a copy of the MPL was not distributed with this
+  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+-->
+
+<div class="container p-16">
+  <mat-card class="m-b-16">
+    <mat-card-header>
+      <mat-card-title>{{ 'labels.heading.Loan Simulator' | translate }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="m-t-16">
+      <form [formGroup]="simulatorForm" (ngSubmit)="calculateSchedule()">
+        <div class="layout-row gap-16 wrap m-b-16">
+          <mat-form-field appearance="fill" class="flex-33">
+            <mat-label>{{ 'labels.inputs.Client ID' | translate }}</mat-label>
+            <input matInput type="number" formControlName="clientId" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="flex-33">
+            <mat-label>{{ 'labels.inputs.Product' | translate }}</mat-label>
+            <mat-select formControlName="productId" (selectionChange)="onProductChange($event.value)" required>
+              @for (product of loanProducts; track product.id) {
+                <mat-option [value]="product.id">
+                  {{ product.name }}
+                </mat-option>
+              }
+            </mat-select>
+            @if (simulatorForm.get('productId')?.hasError('required')) {
+              <mat-error
+                >{{ 'labels.inputs.Product' | translate }} {{ 'labels.inputs.is required' | translate }}</mat-error
+              >
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="flex-33">
+            <mat-label>{{ 'labels.inputs.Principal' | translate }}</mat-label>
+            <input matInput type="number" formControlName="principal" required />
+            @if (simulatorForm.get('principal')?.hasError('required')) {
+              <mat-error
+                >{{ 'labels.inputs.Principal' | translate }} {{ 'labels.inputs.is required' | translate }}</mat-error
+              >
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="flex-33">
+            <mat-label>{{ 'labels.inputs.Number of Repayments' | translate }}</mat-label>
+            <input matInput type="number" formControlName="numberOfRepayments" required />
+            @if (simulatorForm.get('numberOfRepayments')?.hasError('required')) {
+              <mat-error
+                >{{ 'labels.inputs.Number of Repayments' | translate }}
+                {{ 'labels.inputs.is required' | translate }}</mat-error
+              >
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="flex-33">
+            <mat-label>{{ 'labels.inputs.Repayment Every' | translate }}</mat-label>
+            <input matInput type="number" formControlName="repaymentEvery" required />
+            @if (simulatorForm.get('repaymentEvery')?.hasError('required')) {
+              <mat-error
+                >{{ 'labels.inputs.Repayment Every' | translate }}
+                {{ 'labels.inputs.is required' | translate }}</mat-error
+              >
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="flex-33">
+            <mat-label>{{ 'labels.inputs.Repayment Frequency' | translate }}</mat-label>
+            <mat-select formControlName="repaymentFrequencyType" required>
+              @for (option of termFrequencyTypeOptions; track option.id) {
+                <mat-option [value]="option.id">
+                  {{ option.value }}
+                </mat-option>
+              }
+            </mat-select>
+            @if (simulatorForm.get('repaymentFrequencyType')?.hasError('required')) {
+              <mat-error
+                >{{ 'labels.inputs.Repayment Frequency' | translate }}
+                {{ 'labels.inputs.is required' | translate }}</mat-error
+              >
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="flex-33">
+            <mat-label>{{ 'labels.inputs.Nominal Interest Rate' | translate }}</mat-label>
+            <input matInput type="number" formControlName="interestRatePerPeriod" required />
+            @if (simulatorForm.get('interestRatePerPeriod')?.hasError('required')) {
+              <mat-error
+                >{{ 'labels.inputs.Nominal Interest Rate' | translate }}
+                {{ 'labels.inputs.is required' | translate }}</mat-error
+              >
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="flex-33">
+            <mat-label>{{ 'labels.inputs.Amortization' | translate }}</mat-label>
+            <mat-select formControlName="amortizationType" required>
+              @for (option of amortizationTypeOptions; track option.id) {
+                <mat-option [value]="option.id">
+                  {{ option.value }}
+                </mat-option>
+              }
+            </mat-select>
+            @if (simulatorForm.get('amortizationType')?.hasError('required')) {
+              <mat-error
+                >{{ 'labels.inputs.Amortization' | translate }} {{ 'labels.inputs.is required' | translate }}</mat-error
+              >
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="flex-33">
+            <mat-label>{{ 'labels.inputs.Interest Type' | translate }}</mat-label>
+            <mat-select formControlName="interestType" required>
+              @for (option of interestTypeOptions; track option.id) {
+                <mat-option [value]="option.id">
+                  {{ option.value }}
+                </mat-option>
+              }
+            </mat-select>
+            @if (simulatorForm.get('interestType')?.hasError('required')) {
+              <mat-error
+                >{{ 'labels.inputs.Interest Type' | translate }}
+                {{ 'labels.inputs.is required' | translate }}</mat-error
+              >
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="flex-33">
+            <mat-label>{{ 'labels.inputs.Interest Calculation Period' | translate }}</mat-label>
+            <mat-select formControlName="interestCalculationPeriodType" required>
+              @for (option of interestCalculationPeriodTypeOptions; track option.id) {
+                <mat-option [value]="option.id">
+                  {{ option.value }}
+                </mat-option>
+              }
+            </mat-select>
+            @if (simulatorForm.get('interestCalculationPeriodType')?.hasError('required')) {
+              <mat-error
+                >{{ 'labels.inputs.Interest Calculation Period' | translate }}
+                {{ 'labels.inputs.is required' | translate }}</mat-error
+              >
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="flex-33">
+            <mat-label>{{ 'labels.inputs.Submitted On' | translate }}</mat-label>
+            <input matInput [matDatepicker]="submittedOnDatePicker" formControlName="submittedOnDate" required />
+            <mat-datepicker-toggle matSuffix [for]="submittedOnDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #submittedOnDatePicker></mat-datepicker>
+            @if (simulatorForm.get('submittedOnDate')?.hasError('required')) {
+              <mat-error
+                >{{ 'labels.inputs.Submitted On' | translate }} {{ 'labels.inputs.is required' | translate }}</mat-error
+              >
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="flex-33">
+            <mat-label>{{ 'labels.inputs.Disbursement On' | translate }}</mat-label>
+            <input
+              matInput
+              [matDatepicker]="disbursementDatePicker"
+              formControlName="expectedDisbursementDate"
+              required
+            />
+            <mat-datepicker-toggle matSuffix [for]="disbursementDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #disbursementDatePicker></mat-datepicker>
+            @if (simulatorForm.get('expectedDisbursementDate')?.hasError('required')) {
+              <mat-error
+                >{{ 'labels.inputs.Disbursement On' | translate }}
+                {{ 'labels.inputs.is required' | translate }}</mat-error
+              >
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="layout-row align-end gap-16 m-t-16">
+          <button mat-raised-button color="primary" type="submit" [disabled]="simulatorForm.invalid">
+            {{ 'labels.buttons.Calculate Schedule' | translate }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  @if (repaymentScheduleDetails) {
+    <mat-card class="m-b-16">
+      <mat-card-header>
+        <mat-card-title>{{ 'labels.heading.Summary' | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="m-t-16">
+        <div class="layout-row gap-16 wrap">
+          <div class="flex-25">
+            <strong>{{ 'labels.inputs.Principal' | translate }}:</strong>
+            <div>
+              {{
+                repaymentScheduleDetails.totalPrincipalDisbursed | currency: currencyCode : 'symbol-narrow' : '1.2-2'
+              }}
+            </div>
+          </div>
+          <div class="flex-25">
+            <strong>{{ 'labels.inputs.Interest' | translate }}:</strong>
+            <div>
+              {{ repaymentScheduleDetails.totalInterestCharged | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}
+            </div>
+          </div>
+          <div class="flex-25">
+            <strong>{{ 'labels.inputs.Fees' | translate }}:</strong>
+            <div>
+              {{ repaymentScheduleDetails.totalFeeChargesCharged | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}
+            </div>
+          </div>
+          <div class="flex-25">
+            <strong>{{ 'labels.inputs.Total Repayment' | translate }}:</strong>
+            <div>
+              {{ repaymentScheduleDetails.totalRepaymentExpected | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{ 'labels.heading.Repayment Schedule' | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="m-t-16">
+        <mifosx-repayment-schedule-tab
+          [repaymentScheduleDetails]="repaymentScheduleDetails"
+          [currencyCode]="currencyCode"
+        ></mifosx-repayment-schedule-tab>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

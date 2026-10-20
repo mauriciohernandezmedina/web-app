@@ -13,7 +13,10 @@
       "currency": "Währung",
       "showLastCutOff": "Letzten Abschluss anzeigen"
     },
-    "types": { "CASH": "Bargeld", "CHECK": "Scheck" },
+    "types": {
+      "CASH": "Bargeld",
+      "CHECK": "Scheck"
+    },
     "columns": {
       "user": "Benutzer / Verwahrer",
       "name": "Name",
@@ -241,7 +244,11 @@
       "updating": "Wird aktualisiert...",
       "updatingCategory": "{{category}} wird aktualisiert"
     },
-    "categories": { "ACCOUNTING": "Buchhaltung", "GENERAL": "Allgemeine Kataloge", "USERS": "Benutzer" },
+    "categories": {
+      "ACCOUNTING": "Buchhaltung",
+      "GENERAL": "Allgemeine Kataloge",
+      "USERS": "Benutzer"
+    },
     "errors": {
       "alreadyRunning": "Diese Katalogaktualisierung wird bereits ausgeführt",
       "interrupted": "Die vorherige Katalogaktualisierung wurde unterbrochen. Bitte erneut versuchen",
@@ -1298,7 +1305,8 @@
       "Convert": "Umwandeln",
       "Deleting": "Wird gelöscht",
       "Inactivate": "Deaktivieren",
-      "Discount Fee Adjustment": "Anpassung der Rabattgebühr"
+      "Discount Fee Adjustment": "Anpassung der Rabattgebühr",
+      "Calculate Schedule": "Calculate Schedule"
     },
     "catalogs": {
       "% Amount": "Menge",
@@ -2314,7 +2322,10 @@
       "Deposit Details": "Einzahlungsdetails",
       "Services": "Dienstleistungen",
       "Schedules": "Zeitpläne",
-      "Reference": "Referenz"
+      "Reference": "Referenz",
+      "Loan Simulator": "Loan Simulator",
+      "Summary": "Summary",
+      "Repayment Schedule": "Repayment Schedule"
     },
     "inputs": {
       "Breach Start Type": "Starttyp des Verstoßes",
@@ -4398,7 +4409,11 @@
       "PERSON": "Natürliche Person",
       "Payment": "Zahlung",
       "Export Date": "Exportdatum",
-      "Label": "Bezeichnung"
+      "Label": "Bezeichnung",
+      "Total Repayment": "Total Repayment",
+      "Repayment Every": "Repayment Every",
+      "Repayment Frequency": "Repayment Frequency",
+      "is required": "is required"
     },
     "links": {
       "Community": "Gemeinschaft",
@@ -4556,7 +4571,8 @@
       "Manage Dashboards": "Dashboards verwalten",
       "Link to payment system": "Mit Zahlungssystem verknüpfen",
       "Interbank Transfer": "Interbankenüberweisung",
-      "Reporting Dashboard": "Berichts-Dashboard"
+      "Reporting Dashboard": "Berichts-Dashboard",
+      "Loan Simulator": "Loan Simulator"
     },
     "placeholders": {
       "Add new server": "Neuen Server hinzufügen",
@@ -5875,7 +5891,8 @@
       "Automated export": "Dies ist ein automatischer Export aus dem Mifos X Global Dashboard",
       "Discount Fee Adjustment": "Anpassung der Rabattgebühr",
       "Remaining discount fee available to adjust": "Verbleibende anpassbare Rabattgebühr",
-      "Cannot precede the discount fee date": "Darf nicht vor dem Datum der Rabattgebühr liegen"
+      "Cannot precede the discount fee date": "Darf nicht vor dem Datum der Rabattgebühr liegen",
+      "Loan Simulator": "Loan Simulator"
     },
     "permissions": {
       "actions": {
@@ -7167,7 +7184,10 @@
       "dateRange": "Datum von muss vor oder gleich Datum bis sein.",
       "referenceLength": "Die Referenz darf höchstens 200 Zeichen lang sein."
     },
-    "denominationTypes": { "BANKNOTE": "Banknote", "COIN": "Münze" }
+    "denominationTypes": {
+      "BANKNOTE": "Banknote",
+      "COIN": "Münze"
+    }
   },
   "enrollmentStatus": {
     "title": "Registrierungsstatus",

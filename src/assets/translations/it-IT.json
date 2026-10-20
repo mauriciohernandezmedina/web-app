@@ -13,7 +13,10 @@
       "currency": "Valuta",
       "showLastCutOff": "Mostra ultima chiusura"
     },
-    "types": { "CASH": "Contanti", "CHECK": "Assegno" },
+    "types": {
+      "CASH": "Contanti",
+      "CHECK": "Assegno"
+    },
     "columns": {
       "user": "Utente / Custode",
       "name": "Nome",
@@ -241,7 +244,11 @@
       "updating": "Aggiornamento...",
       "updatingCategory": "Aggiornamento di {{category}}"
     },
-    "categories": { "ACCOUNTING": "Contabilità", "GENERAL": "Cataloghi generali", "USERS": "Utenti" },
+    "categories": {
+      "ACCOUNTING": "Contabilità",
+      "GENERAL": "Cataloghi generali",
+      "USERS": "Utenti"
+    },
     "errors": {
       "alreadyRunning": "Questo aggiornamento del catalogo è già in corso",
       "interrupted": "Il precedente aggiornamento del catalogo è stato interrotto. Riprova",
@@ -1296,7 +1303,8 @@
       "Convert": "Converti",
       "Deleting": "Eliminazione",
       "Inactivate": "Disattiva",
-      "Discount Fee Adjustment": "Rettifica della commissione di sconto"
+      "Discount Fee Adjustment": "Rettifica della commissione di sconto",
+      "Calculate Schedule": "Calculate Schedule"
     },
     "catalogs": {
       "% Amount": "Quantità",
@@ -2312,7 +2320,10 @@
       "Deposit Details": "Dettagli del deposito",
       "Services": "Servizi",
       "Schedules": "Orari",
-      "Reference": "Riferimento"
+      "Reference": "Riferimento",
+      "Loan Simulator": "Loan Simulator",
+      "Summary": "Summary",
+      "Repayment Schedule": "Repayment Schedule"
     },
     "inputs": {
       "Breach Start Type": "Tipo di inizio violazione",
@@ -4396,7 +4407,11 @@
       "PERSON": "Persona fisica",
       "Payment": "Pagamento",
       "Export Date": "Data di esportazione",
-      "Label": "Etichetta"
+      "Label": "Etichetta",
+      "Total Repayment": "Total Repayment",
+      "Repayment Every": "Repayment Every",
+      "Repayment Frequency": "Repayment Frequency",
+      "is required": "is required"
     },
     "links": {
       "Community": "Comunità",
@@ -4554,7 +4569,8 @@
       "Link to payment system": "Collega al sistema di pagamento",
       "Interbank Transfer": "Bonifico interbancario",
       "Reporting Dashboard": "Cruscotto dei report",
-      "Assign Staff": "Assegna personale"
+      "Assign Staff": "Assegna personale",
+      "Loan Simulator": "Loan Simulator"
     },
     "placeholders": {
       "Add new server": "Aggiungi nuovo server",
@@ -5873,7 +5889,8 @@
       "Automated export": "Questa è un'esportazione automatica dal cruscotto globale di Mifos X",
       "Discount Fee Adjustment": "Rettifica della commissione di sconto",
       "Remaining discount fee available to adjust": "Commissione di sconto residua disponibile per la rettifica",
-      "Cannot precede the discount fee date": "Non può precedere la data della commissione di sconto"
+      "Cannot precede the discount fee date": "Non può precedere la data della commissione di sconto",
+      "Loan Simulator": "Loan Simulator"
     },
     "permissions": {
       "actions": {
@@ -7165,7 +7182,10 @@
       "dateRange": "Data da deve essere precedente o uguale a Data a.",
       "referenceLength": "Il riferimento non può superare 200 caratteri."
     },
-    "denominationTypes": { "BANKNOTE": "Banconota", "COIN": "Moneta" }
+    "denominationTypes": {
+      "BANKNOTE": "Banconota",
+      "COIN": "Moneta"
+    }
   },
   "enrollmentStatus": {
     "title": "Stato registrazione",
