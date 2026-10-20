@@ -28,6 +28,11 @@ describe('BaseTellerComponent', () => {
 
   it('uses the existing workflow routes and permission checks', () => {
     expect(BASE_TELLER_WORKFLOWS).toMatchObject([
+      { materialIcon: 'payments', permission: 'READ_BASE_TELLER_CASH_TRANSFER', route: [
+          '/organization',
+          'base-teller',
+          'cash-transfers-between-tellers'
+        ] },
       { materialIcon: 'swap_horiz', permission: 'READ_ACCOUNTTRANSFER', route: [
           '/organization',
           'base-teller',
@@ -195,11 +200,37 @@ describe('BaseTellerComponent', () => {
     ]);
   });
 
+  it.each([
+    { permissions: [] as string[], visible: false },
+    { permissions: ['READ_BASE_TELLER_WITHDRAWAL'], visible: false },
+    { permissions: [
+        'READ_BASE_TELLER_WITHDRAWAL',
+        'READ_CLIENT',
+        'READ_SAVINGSACCOUNT'
+      ], visible: true },
+    { permissions: ['ALL_FUNCTIONS_READ'], visible: true }
+  ])('checks backend read permissions for the Outflows card: $permissions', ({ permissions, visible }) => {
+    const outflows = component(permissions).outflows;
+    expect(outflows).toHaveLength(visible ? 1 : 0);
+    if (visible)
+      expect(outflows[0].route).toEqual([
+        '/organization',
+        'base-teller',
+        'withdrawals'
+      ]);
+  });
+
   it('hides transfers without permission even if legacy RBAC is off', () => {
     expect(component([]).otherOperations).toEqual([]);
   });
   it('shows transfers under Other Operations with exact read permission', () => {
     expect(component(['READ_ACCOUNTTRANSFER']).otherOperations).toHaveLength(1);
+  });
+
+  it('shows physical cash transfers under Other Operations with the backend permission', () => {
+    expect(component(['READ_BASE_TELLER_CASH_TRANSFER']).otherOperations.map((w) => w.label)).toEqual([
+      'cashTellerTransfer.title'
+    ]);
   });
 
   it('hides Bill and Service Payment when production mode is disabled', () => {

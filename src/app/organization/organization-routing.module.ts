@@ -6,6 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import { CashTransfersBetweenTellersComponent } from './base-teller/cash-transfers-between-tellers/cash-transfers-between-tellers.component';
+import { cashTransferGuard } from './base-teller/cash-transfers-between-tellers/cash-transfer.guard';
+
 /** Angular Imports */
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -17,6 +20,8 @@ import { Route } from '../core/route/route.service';
 import { OrganizationComponent } from './organization.component';
 import { EndOfDayClosingComponent } from './base-teller/end-of-day-cash-closing/end-of-day-closing.component';
 import { endOfDayClosingGuard } from './base-teller/end-of-day-cash-closing/end-of-day-closing.guard';
+import { WithdrawalComponent } from './base-teller/withdrawals/withdrawal.component';
+import { withdrawalGuard } from './base-teller/withdrawals/withdrawal.guard';
 import { BaseTellerComponent } from './base-teller/base-teller.component';
 import { LoanProvisioningCriteriaComponent } from './loan-provisioning-criteria/loan-provisioning-criteria.component';
 import { OfficesComponent } from './offices/offices.component';
@@ -475,6 +480,18 @@ const routes: Routes = [
           pathMatch: 'full',
           component: BaseTellerComponent,
           data: { title: 'Base Teller', breadcrumb: 'Base Teller' }
+        },
+        {
+          path: 'base-teller/withdrawals',
+          component: WithdrawalComponent,
+          canActivate: [withdrawalGuard],
+          data: { title: 'withdrawal.title', breadcrumb: 'withdrawal.title' }
+        },
+        {
+          path: 'base-teller/cash-transfers-between-tellers',
+          component: CashTransfersBetweenTellersComponent,
+          canActivate: [cashTransferGuard],
+          data: { title: 'cashTellerTransfer.title', breadcrumb: 'cashTellerTransfer.title' }
         },
         {
           path: 'base-teller/account-transfers',
