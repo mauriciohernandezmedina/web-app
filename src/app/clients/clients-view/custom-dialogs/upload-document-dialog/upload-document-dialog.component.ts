@@ -18,7 +18,6 @@ import {
 import { FormGroup, FormBuilder, Validators, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { FileUploadComponent } from '../../../../shared/file-upload/file-upload.component';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
-import { Dates } from 'app/core/utils/dates';
 
 @Component({
   selector: 'mifosx-upload-document-dialog',
@@ -37,7 +36,6 @@ import { Dates } from 'app/core/utils/dates';
 export class UploadDocumentDialogComponent implements OnInit {
   dialogRef = inject<MatDialogRef<UploadDocumentDialogComponent>>(MatDialogRef);
   private formBuilder = inject(FormBuilder);
-  private dateUtils = inject(Dates);
   data = inject(MAT_DIALOG_DATA);
 
   /** Upload Document form. */
@@ -52,8 +50,6 @@ export class UploadDocumentDialogComponent implements OnInit {
   allowedDocumentTypes: any[] = [];
   /** Status options for identifiers */
   statusOptions: any[] = [];
-  /** Edit mode for identifiers */
-  editIdentifier = false;
 
   /**
    * @param {MatDialogRef} dialogRef Dialog reference element
@@ -67,7 +63,6 @@ export class UploadDocumentDialogComponent implements OnInit {
     this.entityType = data.entityType;
     this.allowedDocumentTypes = data.allowedDocumentTypes || [];
     this.statusOptions = data.statusOptions || [];
-    this.editIdentifier = data.editIdentifier || false;
   }
 
   ngOnInit() {
@@ -82,23 +77,21 @@ export class UploadDocumentDialogComponent implements OnInit {
       // Unified form for identity: identifier fields + document upload
       this.uploadDocumentForm = this.formBuilder.group({
         documentTypeId: [
-          this.data.identifier?.documentType?.id || '',
+          '',
           Validators.required
         ],
         status: [
-          this.data.identifier?.status === 'clientIdentifierStatusType.inactive' ? 'Inactive' : 'Active',
+          'Active',
           Validators.required
         ],
         documentKey: [
-          this.data.identifier?.documentKey || '',
+          '',
           Validators.required
         ],
-        description: [this.data.identifier?.description || ''],
-        issuanceDate: [this.parseIdentifierDate(this.data.identifier?.issuanceDate)],
-        expiryDate: [this.parseIdentifierDate(this.data.identifier?.expiryDate)],
+        description: [''],
         fileName: [
           '',
-          this.editIdentifier ? [] : Validators.required
+          Validators.required
         ],
         file: ['']
       });
@@ -126,9 +119,5 @@ export class UploadDocumentDialogComponent implements OnInit {
       this.uploadDocumentForm.get('fileName').setValue(file.name);
       this.uploadDocumentForm.get('file').setValue(file);
     }
-  }
-
-  private parseIdentifierDate(value: any): Date | string {
-    return value ? this.dateUtils.parseDate(value) : '';
   }
 }

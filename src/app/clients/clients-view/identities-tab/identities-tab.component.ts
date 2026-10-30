@@ -50,47 +50,9 @@ import type { LightGallery } from 'lightgallery/lightgallery';
 import type { GalleryItem } from 'lightgallery/lg-utils';
 import { DocumentPreviewService } from 'app/shared/services/document-preview.service';
 import { TranslateService } from '@ngx-translate/core';
-import { ClientIdentifierPayload, ClientsService } from '../../clients.service';
+import { ClientsService } from '../../clients.service';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
-import { Dates } from 'app/core/utils/dates';
-import { SettingsService } from 'app/settings/settings.service';
-
-interface ClientIdentifierDocumentType {
-  id: number | string;
-  name: string;
-}
-
-interface ClientIdentifierDocument {
-  id: string;
-  parentEntityId?: string;
-  fileName?: string;
-  name?: string;
-  description?: string;
-}
-
-interface ClientIdentifierIdentity {
-  id: string;
-  clientId?: string;
-  documentType: ClientIdentifierDocumentType;
-  documentKey: string;
-  description?: string;
-  status: string;
-  issuanceDate?: Date | number[] | string | null;
-  expiryDate?: Date | number[] | string | null;
-  documents?: ClientIdentifierDocument[];
-}
-
-interface ClientIdentifierDialogResult {
-  documentTypeId: number | string;
-  status?: 'Active' | 'Inactive';
-  documentKey: string;
-  description?: string;
-  issuanceDate?: Date | string | null;
-  expiryDate?: Date | string | null;
-  fileName?: string;
-  file?: File;
-}
 
 /**
  * Identities Tab Component
@@ -126,8 +88,6 @@ export class IdentitiesTabComponent implements OnDestroy {
   private translateService = inject(TranslateService);
   private documentPreviewService = inject(DocumentPreviewService);
   private changeDetectorRef = inject(ChangeDetectorRef);
-  private dateUtils = inject(Dates);
-  private settingsService = inject(SettingsService);
 
   private destroyRef = inject(DestroyRef);
 
@@ -143,8 +103,6 @@ export class IdentitiesTabComponent implements OnDestroy {
     'description',
     'type',
     'documentKey',
-    'issuanceDate',
-    'expiryDate',
     'documents',
     'status',
     'actions'
@@ -221,7 +179,13 @@ export class IdentitiesTabComponent implements OnDestroy {
 
     dialogRef.afterClosed().subscribe((response: any) => {
       if (response) {
-        const identifierData = this.buildIdentifierPayload(response, true);
+        // Create identifier data
+        const identifierData = {
+          documentTypeId: response.documentTypeId,
+          status: response.status,
+          documentKey: response.documentKey,
+          description: response.description
+        };
 
         // First create the identifier
         this.clientService.addClientIdentifier(this.clientId, identifierData).subscribe({
@@ -237,8 +201,6 @@ export class IdentitiesTabComponent implements OnDestroy {
               description: response.description,
               documentType: selectedDocType,
               documentKey: response.documentKey,
-              issuanceDate: response.issuanceDate || null,
-              expiryDate: response.expiryDate || null,
               documents: [] as any[],
               clientId: this.clientId,
               status:
@@ -281,58 +243,6 @@ export class IdentitiesTabComponent implements OnDestroy {
           },
           error: (err: any) => {
             console.error('Failed to create identifier', err);
-          }
-        });
-      }
-    });
-  }
-
-  /**
-   * Edit Client Identifier.
-   *
-   * @param {ClientIdentifierIdentity} identity Client Identifier
-   */
-  editIdentifier(identity: ClientIdentifierIdentity) {
-    const translatedDocTypes = this.clientIdentifierTemplate.allowedDocumentTypes.map(
-      (docType: ClientIdentifierDocumentType) => ({
-        ...docType,
-        name: this.translateService.instant(`labels.catalogs.${docType.name}`)
-      })
-    );
-
-    const statusOptions = [
-      { label: this.translateService.instant('labels.catalogs.Active'), value: 'Active' },
-      { label: this.translateService.instant('labels.catalogs.Inactive'), value: 'Inactive' }
-    ];
-
-    const dialogRef = this.dialog.open(UploadDocumentDialogComponent, {
-      data: {
-        documentIdentifier: true,
-        editIdentifier: true,
-        identifier: identity,
-        allowedDocumentTypes: translatedDocTypes,
-        statusOptions: statusOptions
-      }
-    });
-
-    dialogRef.afterClosed().subscribe((response: ClientIdentifierDialogResult | undefined) => {
-      if (response) {
-        const identifierData = this.buildIdentifierPayload(response, false);
-        this.clientService.editClientIdentifier(this.clientId, identity.id, identifierData).subscribe({
-          next: () => {
-            const selectedDocType = this.clientIdentifierTemplate.allowedDocumentTypes.find(
-              (doc: ClientIdentifierDocumentType) => doc.id === response.documentTypeId
-            );
-            identity.description = response.description;
-            identity.documentType = selectedDocType || identity.documentType;
-            identity.documentKey = response.documentKey;
-            identity.issuanceDate = response.issuanceDate || null;
-            identity.expiryDate = response.expiryDate || null;
-            this.identifiersTable.renderRows();
-            this.changeDetectorRef.markForCheck();
-          },
-          error: (err: any) => {
-            console.error('Failed to update identifier', err);
           }
         });
       }
@@ -470,36 +380,5 @@ export class IdentitiesTabComponent implements OnDestroy {
     this.clientIdentities.forEach((identity: any) => {
       identity.documents?.forEach((doc: any) => this.setThumbnail(doc, identity));
     });
-  }
-
-  private buildIdentifierPayload(
-    response: ClientIdentifierDialogResult,
-    includeStatus: boolean
-  ): ClientIdentifierPayload {
-    const dateFormat = this.settingsService.dateFormat;
-    const identifierData: ClientIdentifierPayload = {
-      documentTypeId: response.documentTypeId,
-      documentKey: response.documentKey,
-      description: response.description,
-      dateFormat,
-      locale: this.settingsService.language.code,
-      issuanceDate: null,
-      expiryDate: null
-    };
-    if (includeStatus && response.status) {
-      identifierData.status = response.status;
-    }
-    this.setIdentifierDate(identifierData, 'issuanceDate', response.issuanceDate, dateFormat);
-    this.setIdentifierDate(identifierData, 'expiryDate', response.expiryDate, dateFormat);
-    return identifierData;
-  }
-
-  private setIdentifierDate(
-    identifierData: ClientIdentifierPayload,
-    key: 'issuanceDate' | 'expiryDate',
-    value: Date | string | null | undefined,
-    dateFormat: string
-  ): void {
-    identifierData[key] = value ? this.dateUtils.formatDate(value, dateFormat) : null;
   }
 }
