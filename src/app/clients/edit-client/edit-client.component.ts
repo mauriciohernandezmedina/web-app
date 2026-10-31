@@ -759,15 +759,11 @@ export class EditClientComponent implements OnInit {
         }
         const value = form.getRawValue();
         const payload: ClientIdentifierPayload = {
-          documentTypeId: value.documentTypeId,
-          documentKey: value.documentKey,
-          description: value.description,
-          status: value.status,
-          issuanceDate: value.issuanceDate ? this.dateUtils.formatDate(value.issuanceDate, dateFormat) : null,
-          expiryDate: value.expiryDate ? this.dateUtils.formatDate(value.expiryDate, dateFormat) : null,
-          dateFormat,
-          locale
-        };
+              documentTypeId: value.documentTypeId,
+              documentKey: value.documentKey,
+              description: value.description,
+              status: value.status
+            };
         return this.clientsService.editClientIdentifier(
           this.clientDataAndTemplate.id.toString(),
           identifier.id.toString(),

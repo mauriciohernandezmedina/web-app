@@ -19,6 +19,13 @@ import { environment } from 'environments/environment';
 /**
  * Clients service.
  */
+export interface ClientIdentifierPayload {
+  documentTypeId: number;
+  documentKey: string;
+  description?: string;
+  status?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -261,6 +268,14 @@ export class ClientsService {
 
   deleteFamilyMember(clientId: string, familyMemberId: string) {
     return this.http.delete(`/clients/${clientId}/familymembers/${familyMemberId}`);
+  }
+
+  editClientIdentifier(
+    clientId: string,
+    identifierId: string,
+    identifierPayload: ClientIdentifierPayload
+  ): Observable<any> {
+    return this.http.put(`/clients/${clientId}/identifiers/${identifierId}`, identifierPayload);
   }
 
   getClientIdentifiers(clientId: string) {
