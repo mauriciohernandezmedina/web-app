@@ -110,7 +110,7 @@ const routes: Routes = [
       },
       {
         path: 'simulator',
-        data: { title: 'Loan Simulator', breadcrumb: 'Simulator', routeParamBreadcrumb: false },
+        data: { title: 'Loan Simulator', breadcrumb: 'Loan Simulator', routeParamBreadcrumb: false },
         component: LoanSimulatorComponent,
         resolve: {
           loanProductsBasicDetails: LoanProductsResolver

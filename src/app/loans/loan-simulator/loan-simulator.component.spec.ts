@@ -17,7 +17,25 @@ import { LoanSimulatorComponent } from './loan-simulator.component';
 import { LoansService } from 'app/loans/loans.service';
 import { SettingsService } from 'app/settings/settings.service';
 import { Dates } from 'app/core/utils/dates';
-import { RepaymentSchedule, RepaymentSchedulePeriod } from '../models/loan-account.model';
+import { RepaymentSchedule } from '../models/loan-account.model';
+
+const mockSave = jest.fn();
+const mockSetFontSize = jest.fn();
+const mockText = jest.fn();
+
+jest.mock('jspdf', () => ({
+  jsPDF: jest.fn().mockImplementation(() => ({
+    setFontSize: mockSetFontSize,
+    text: mockText,
+    save: mockSave
+  }))
+}));
+
+const mockAutoTable = jest.fn();
+jest.mock('jspdf-autotable', () => ({
+  __esModule: true,
+  default: (...args: any[]) => mockAutoTable(...args)
+}));
 
 describe('LoanSimulatorComponent', () => {
   let component: LoanSimulatorComponent;
@@ -71,6 +89,11 @@ describe('LoanSimulatorComponent', () => {
   }
 
   beforeEach(() => {
+    mockSave.mockClear();
+    mockSetFontSize.mockClear();
+    mockText.mockClear();
+    mockAutoTable.mockClear();
+
     loansServiceMock = {
       calculateLoanSchedule: jest.fn(),
       getLoansAccountTemplateResource: jest.fn()
@@ -136,7 +159,7 @@ describe('LoanSimulatorComponent', () => {
     fixture.detectChanges();
   });
 
-  it('1. simulateBaseline() builds payload with loanTermVariations: [], saves baseline state and populates installmentsFormArray', () => {
+  it('1. simulateBaseline() builds payload with loanTermVariations: [], saves baseline state, populates installmentsFormArray and updates tableDataSource', () => {
     const mockSchedule = createMockSchedule(12, 1000);
     loansServiceMock.calculateLoanSchedule.mockReturnValue(of(mockSchedule));
 
@@ -174,6 +197,10 @@ describe('LoanSimulatorComponent', () => {
     expect(component.baselineEmi).toBe(1000);
     expect(component.installmentsFormArray.length).toBe(12);
 
+    // Verify tableDataSource is updated with the same elements
+    expect(component.tableDataSource.length).toBe(12);
+    expect(component.tableDataSource[0]).toBe(component.installmentsFormArray.at(0));
+
     const firstRow = component.installmentsFormArray.at(0);
     expect(firstRow.get('period')?.value).toBe(1);
     expect(firstRow.get('proposedEmiAmount')?.value).toBe(1000);
@@ -181,12 +208,16 @@ describe('LoanSimulatorComponent', () => {
     expect(firstRow.get('isEmiModified')?.value).toBe(false);
     expect(firstRow.get('isLastPeriod')?.value).toBe(false);
 
+    // Test onInstallmentEmiChange
+    component.onInstallmentEmiChange(firstRow);
+    expect(firstRow.get('isEmiModified')?.value).toBe(true);
+
     const lastRow = component.installmentsFormArray.at(11);
     expect(lastRow.get('period')?.value).toBe(12);
     expect(lastRow.get('isLastPeriod')?.value).toBe(true);
   });
 
-  it('2. applyJuneDecemberAssistant() adds juneExtraAmount (month 5) and decemberExtraAmount (month 11) to baselineEmi, excluding the last installment', () => {
+  it('2. applyJuneDecemberAssistant() restores baseline periods first, adds juneExtraAmount and decemberExtraAmount, excluding the last installment', () => {
     // 14 periods starting in January 2026:
     // Period 6 -> June 2026 (month 5) -> June extra
     // Period 12 -> December 2026 (month 11) -> December extra
@@ -215,8 +246,16 @@ describe('LoanSimulatorComponent', () => {
 
     component.simulateBaseline();
 
-    // Now test applyJuneDecemberAssistant
+    // Simulate that installmentsFormArray was previously truncated (e.g. from a REDUCE_TERM simulation)
+    while (component.installmentsFormArray.length > 10) {
+      component.installmentsFormArray.removeAt(component.installmentsFormArray.length - 1);
+    }
+    expect(component.installmentsFormArray.length).toBe(10);
+
+    // applyJuneDecemberAssistant must restore all 14 baseline periods before applying extras
     component.applyJuneDecemberAssistant();
+    expect(component.installmentsFormArray.length).toBe(14);
+    expect(component.tableDataSource.length).toBe(14);
 
     // Period 6 (index 5) is June 2026 (month 5)
     const juneRow = component.installmentsFormArray.at(5);
@@ -233,6 +272,7 @@ describe('LoanSimulatorComponent', () => {
     // Period 14 (index 13) is the last installment -> must be excluded from assistant modification
     const lastRow = component.installmentsFormArray.at(13);
     expect(lastRow.get('isLastPeriod')?.value).toBe(true);
+    expect(lastRow.get('isEmiModified')?.value).toBe(false);
 
     // Also verify when December IS the last period (e.g., exactly 12 periods Jan-Dec):
     const twelvePeriodSchedule = createMockSchedule(12, 1000, 2026, 1);
@@ -248,7 +288,7 @@ describe('LoanSimulatorComponent', () => {
     expect(p12Last.get('isEmiModified')?.value).toBe(false);
   });
 
-  it('3. recalculateWithVariations() in REDUCE_EMI mode keeps numberOfRepayments, sends only modified installments in variations, and updates reduced installments from backend', () => {
+  it('3. recalculateWithVariations() in REDUCE_EMI mode keeps numberOfRepayments = originalNumberOfRepayments, sends only modified installments in variations, and updates reduced installments and tableDataSource', () => {
     const mockSchedule = createMockSchedule(12, 1000);
     loansServiceMock.calculateLoanSchedule.mockReturnValue(of(mockSchedule));
 
@@ -317,9 +357,13 @@ describe('LoanSimulatorComponent', () => {
     const updatedRow12 = component.installmentsFormArray.at(11);
     expect(updatedRow12.get('proposedEmiAmount')?.value).toBe(940);
     expect(updatedRow12.get('isEmiModified')?.value).toBe(false);
+
+    // Verify tableDataSource reflects the updated rows
+    expect(component.tableDataSource.length).toBe(12);
+    expect(component.tableDataSource[3].get('proposedEmiAmount')?.value).toBe(940);
   });
 
-  it('4. recalculateWithVariations() in REDUCE_TERM mode reduces numberOfRepayments = targetRepayments, anchors ordinary installments with emiAmount = baselineEmi (excluding targetRepayments), and executes RxJS convergence loop', () => {
+  it('4. recalculateWithVariations() in REDUCE_TERM mode sends originalNumberOfRepayments, anchors ordinary unmodified installments with baselineEmi (excluding targetRepayments), and updates installmentsSaved and tableDataSource', () => {
     const mockSchedule = createMockSchedule(12, 1000);
     loansServiceMock.calculateLoanSchedule.mockReturnValue(of(mockSchedule));
 
@@ -343,60 +387,45 @@ describe('LoanSimulatorComponent', () => {
 
     component.simulateBaseline();
 
-    // Modify period 3: proposedEmiAmount = 3000 (extra principal = 2000)
-    // estimatedReducedPeriods = floor(2000 / 1000) = 2
-    // targetRepayments = 12 - 2 = 10
+    // Modify period 3: proposedEmiAmount = 3000
     const row3 = component.installmentsFormArray.at(2);
     row3.get('proposedEmiAmount')?.setValue(3000);
 
-    // First call returns target = 10 schedule where the last period totalDueForPeriod = 1150 (> 1000 * 1.05 = 1050)
-    const scheduleTarget10 = createMockSchedule(10, 1000);
-    scheduleTarget10.periods[10].totalDueForPeriod = 1150; // exceeds 1.05 * baselineEmi
-
-    // Second call for target = 11 returns convergent schedule
-    const scheduleTarget11 = createMockSchedule(11, 1000);
-    scheduleTarget11.periods[11].totalDueForPeriod = 980;
-
-    loansServiceMock.calculateLoanSchedule
-      .mockReturnValueOnce(of(scheduleTarget10))
-      .mockReturnValueOnce(of(scheduleTarget11));
+    // Backend terminates loan schedule at period 10 because extra principal amortized loan faster
+    const schedule10Periods = createMockSchedule(10, 1000);
+    schedule10Periods.periods[3].totalDueForPeriod = 3000;
+    schedule10Periods.periods[10].totalDueForPeriod = 750; // final settlement installment
+    loansServiceMock.calculateLoanSchedule.mockReturnValue(of(schedule10Periods));
 
     component.recalculateWithVariations();
 
-    // Verify 2 recalculation calls were made due to convergence (> 1.05 * baselineEmi)
-    expect(loansServiceMock.calculateLoanSchedule).toHaveBeenCalledTimes(3); // 1 baseline + 2 recalculations
-
-    // Call 1 of recalculate (target = 10):
-    const firstRecalcPayload = loansServiceMock.calculateLoanSchedule.mock.calls[1][0];
-    expect(firstRecalcPayload.numberOfRepayments).toBe(10);
-    expect(firstRecalcPayload.loanTermFrequency).toBe(10);
+    const sentPayload = loansServiceMock.calculateLoanSchedule.mock.calls[1][0];
+    // Payload retains originalNumberOfRepayments = 12
+    expect(sentPayload.numberOfRepayments).toBe(12);
+    expect(sentPayload.loanTermFrequency).toBe(12);
 
     // Variations must contain:
-    // periods 1..9 (period < 10)
+    // periods 1..11 (period < 12)
     // Period 3 is modified with 3000
-    // Periods 1, 2, 4..9 are anchored with 1000
-    // Period 10 (targetRepayments) MUST NOT be included!
-    const variationsTarget10 = firstRecalcPayload.loanTermVariations;
-    expect(variationsTarget10.length).toBe(9);
-    expect(variationsTarget10.some((v: any) => v.applicableFromDate === '2026-10-15')).toBe(false); // Period 10 excluded!
+    // Periods 1, 2, 4..11 are anchored with baselineEmi = 1000
+    // Period 12 (originalNumberOfRepayments) MUST NOT be included!
+    const variations = sentPayload.loanTermVariations;
+    expect(variations.length).toBe(11);
+    expect(variations.some((v: any) => v.applicableFromDate === '2026-12-15')).toBe(false); // Period 12 excluded!
 
-    const varPeriod3 = variationsTarget10.find((v: any) => v.applicableFromDate === '2026-03-15');
+    const varPeriod3 = variations.find((v: any) => v.applicableFromDate === '2026-03-15');
     expect(varPeriod3.decimalValue).toBe(3000);
 
-    const varPeriod1 = variationsTarget10.find((v: any) => v.applicableFromDate === '2026-01-15');
+    const varPeriod1 = variations.find((v: any) => v.applicableFromDate === '2026-01-15');
     expect(varPeriod1.decimalValue).toBe(1000);
 
-    // Call 2 of recalculate (converged to target = 11):
-    const secondRecalcPayload = loansServiceMock.calculateLoanSchedule.mock.calls[2][0];
-    expect(secondRecalcPayload.numberOfRepayments).toBe(11);
-    expect(secondRecalcPayload.loanTermFrequency).toBe(11);
-
-    // Final schedule in component has 11 periods
-    expect(component.currentSchedule?.periods.filter((p) => (p.period ?? 0) >= 1).length).toBe(11);
-    expect(component.installmentsSaved).toBe(1); // 12 - 11 = 1 installment saved
+    // Final schedule has 10 periods returned by Fineract
+    expect(component.currentSchedule?.periods.filter((p) => (p.period ?? 0) >= 1).length).toBe(10);
+    expect(component.installmentsSaved).toBe(2); // 12 - 10 = 2 installments saved
+    expect(component.tableDataSource.length).toBe(10);
   });
 
-  it('5. recalculateWithVariations() in REDUCE_TERM mode retries with targetRepayments - zeroPeriodsCount when response has periods with principalDue <= 0', () => {
+  it('5. Changing extraRepaymentEffect automatically triggers recalculateWithVariations() when baselineSchedule exists', () => {
     const mockSchedule = createMockSchedule(12, 1000);
     loansServiceMock.calculateLoanSchedule.mockReturnValue(of(mockSchedule));
 
@@ -415,33 +444,83 @@ describe('LoanSimulatorComponent', () => {
       interestType: 0,
       interestCalculationPeriodType: 1,
       transactionProcessingStrategyCode: 'mifos-standard-strategy',
-      extraRepaymentEffect: 'REDUCE_TERM'
+      extraRepaymentEffect: 'REDUCE_EMI'
     });
 
     component.simulateBaseline();
+    expect(loansServiceMock.calculateLoanSchedule).toHaveBeenCalledTimes(1);
 
-    // Modify period 2 with extra payment: 2000 (totalExtraPrincipal = 1000, estimatedReduced = 1, target = 11)
-    const row2 = component.installmentsFormArray.at(1);
-    row2.get('proposedEmiAmount')?.setValue(2000);
+    // Changing extraRepaymentEffect triggers recalculateWithVariations
+    component.simulatorForm.get('extraRepaymentEffect')?.setValue('REDUCE_TERM');
+    expect(loansServiceMock.calculateLoanSchedule).toHaveBeenCalledTimes(2);
+  });
 
-    // First call returns target = 11, but period 11 has principalDue = 0 (1 zero period)
-    const scheduleWithZeroPeriod = createMockSchedule(11, 1000);
-    scheduleWithZeroPeriod.periods[11].principalDue = 0;
-    scheduleWithZeroPeriod.periods[11].totalDueForPeriod = 50;
+  it('6. onProductChange() uses fallback principal 10000 when template has no principal', () => {
+    loansServiceMock.getLoansAccountTemplateResource.mockReturnValue(
+      of({
+        currency: { code: 'EUR' },
+        numberOfRepayments: 24,
+        repaymentEvery: 1,
+        interestRatePerPeriod: 2.0
+      })
+    );
 
-    // Second call for target = 10 returns cleanly
-    const scheduleTarget10 = createMockSchedule(10, 1000);
+    component.onProductChange(10);
 
-    loansServiceMock.calculateLoanSchedule
-      .mockReturnValueOnce(of(scheduleWithZeroPeriod))
-      .mockReturnValueOnce(of(scheduleTarget10));
+    expect(component.currencyCode).toBe('EUR');
+    expect(component.simulatorForm.get('principal')?.value).toBe(10000);
+    expect(component.simulatorForm.get('numberOfRepayments')?.value).toBe(24);
+  });
 
-    component.recalculateWithVariations();
+  it('7. displayedColumns does not include proposedInterestRate', () => {
+    expect(component.displayedColumns).not.toContain('proposedInterestRate');
+    expect(component.displayedColumns).toEqual([
+      'period',
+      'dueDate',
+      'proposedDueDate',
+      'principalDue',
+      'interestDue',
+      'proposedEmiAmount',
+      'balanceOfLoan'
+    ]);
+  });
 
-    // Verifies retry with targetRepayments - 1 = 10
-    const retryPayload = loansServiceMock.calculateLoanSchedule.mock.calls[2][0];
-    expect(retryPayload.numberOfRepayments).toBe(10);
-    expect(component.installmentsSaved).toBe(2); // 12 - 10 = 2 installments saved
+  it('8. exportToPDF() exits early if currentSchedule is null, and generates/saves PDF when currentSchedule exists', () => {
+    // 1. Without currentSchedule
+    component.currentSchedule = null;
+    component.exportToPDF();
+    expect(mockSave).not.toHaveBeenCalled();
+    expect(mockAutoTable).not.toHaveBeenCalled();
+
+    // 2. With currentSchedule
+    const mockSchedule = createMockSchedule(12, 1000);
+    loansServiceMock.calculateLoanSchedule.mockReturnValue(of(mockSchedule));
+    component.simulatorForm.patchValue({
+      clientId: 1,
+      productId: 10,
+      principal: 12000,
+      numberOfRepayments: 12,
+      repaymentEvery: 1,
+      repaymentFrequencyType: 2,
+      loanTermFrequency: 12,
+      loanTermFrequencyType: 2,
+      interestRatePerPeriod: 1.5,
+      expectedDisbursementDate: new Date('2026-01-15'),
+      amortizationType: 1,
+      interestType: 0,
+      interestCalculationPeriodType: 1,
+      transactionProcessingStrategyCode: 'mifos-standard-strategy'
+    });
+    component.simulateBaseline();
+
+    component.exportToPDF();
+
+    expect(mockSetFontSize).toHaveBeenCalled();
+    expect(mockText).toHaveBeenCalled();
+    expect(mockAutoTable).toHaveBeenCalledTimes(1);
+    expect(mockSave).toHaveBeenCalledTimes(1);
+    expect(mockSave).toHaveBeenCalledWith(
+      expect.stringMatching(/^loan-simulation-\d{4}-\d{2}-\d{2}\.pdf$/)
+    );
   });
 });
-

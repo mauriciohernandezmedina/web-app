@@ -1190,6 +1190,7 @@
       "NotEqual": "No igual"
     },
     "heading": {
+      "Repayment Schedule": "Calendario de Pagos",
       "Loan Simulator": "Simulador y Cotizador de Crédito",
       "Extraordinary Abonos Assistant": "Asistente de Abonos Extraordinarios (Junio / Diciembre)",
       "Simulation Comparison": "Resumen de Ahorro y Plazo",
@@ -1813,6 +1814,10 @@
       "Recovery": "Recuperación"
     },
     "inputs": {
+      "Select Loan Product": "Seleccionar Producto de Préstamo",
+      "Months": "Meses",
+      "Weeks": "Semanas",
+      "Years": "Años",
       "Extra Repayment Effect": "Efecto del Abono Extraordinario",
       "Reduce Installment Amount (Keep Term)": "Reducir Valor de Cuota (Mantener Plazo)",
       "Reduce Loan Term (Keep Regular Installment)": "Reducir Plazo (Mantener Cuota Ordinaria)",
@@ -1985,6 +1990,7 @@
       "Avg Amount/Transaction": "Monto Promedio/Transacción",
       "Balance": "Saldo",
       "Balance Of Loan": "Saldo del Crédito",
+      "Balance of loan": "Saldo del Crédito",
       "Balance Required For Interest Calculation": "Saldo requerido para el cálculo de intereses",
       "Balance Required for Interest Calculation": "Saldo requerido para el cálculo de intereses",
       "Balanced": "Balanceado",
@@ -4033,6 +4039,8 @@
       "Breach evaluation will resume": "La evaluación de incumplimiento se reanuda el {{date}}. El préstamo se vuelve a evaluar a partir de esa fecha."
     },
     "text": {
+      "Loan Simulator": "Simulador de Crédito",
+      "Simulator": "Simulador",
       "Complete these steps to preview the product": "Complete estos pasos para ver la vista previa del producto",
       "Agriculture Loan": "Crédito Agrícola",
       "Auto Loan": "Crédito Automotriz",

@@ -23,8 +23,6 @@ import {
 } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import {
   MatCard,
   MatCardHeader,
@@ -36,7 +34,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressBar } from '@angular/material/progress-bar';
-import { CurrencyPipe, DecimalPipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 
 import { Dates } from 'app/core/utils/dates';
 import { LoansService } from 'app/loans/loans.service';
@@ -51,6 +49,9 @@ import {
 } from '../models/loan-account.model';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 import { FormatNumberPipe } from 'app/pipes/format-number.pipe';
+import { TranslateService } from '@ngx-translate/core';
+import { jsPDF, jsPDFOptions } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'mifosx-loan-simulator',
@@ -68,7 +69,6 @@ import { FormatNumberPipe } from 'app/pipes/format-number.pipe';
     MatIcon,
     MatProgressBar,
     CurrencyPipe,
-    DecimalPipe,
     FormatNumberPipe
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -81,6 +81,7 @@ export class LoanSimulatorComponent implements OnInit {
   private dateUtils = inject(Dates);
   private cdr = inject(ChangeDetectorRef);
   private destroyRef = inject(DestroyRef);
+  private translateService = inject(TranslateService);
 
   loanProducts: any[] = [];
   productTemplate: any | null = null;
@@ -94,6 +95,7 @@ export class LoanSimulatorComponent implements OnInit {
 
   simulatorForm!: FormGroup;
   installmentsFormArray: FormArray<FormGroup> = this.fb.array<FormGroup>([]);
+  tableDataSource: FormGroup[] = [];
 
   displayedColumns: string[] = [
     'period',
@@ -102,7 +104,6 @@ export class LoanSimulatorComponent implements OnInit {
     'principalDue',
     'interestDue',
     'proposedEmiAmount',
-    'proposedInterestRate',
     'balanceOfLoan'
   ];
 
@@ -116,6 +117,9 @@ export class LoanSimulatorComponent implements OnInit {
   }
 
   private initForm(): void {
+    const bd = this.settingsService.businessDate;
+    const validDate = bd instanceof Date && !isNaN(bd.getTime()) ? bd : new Date();
+
     this.simulatorForm = this.fb.group({
       clientId: [this.resolveDefaultClientId(), [Validators.required]],
       productId: [null, [Validators.required]],
@@ -126,7 +130,7 @@ export class LoanSimulatorComponent implements OnInit {
       loanTermFrequency: [null, [Validators.required, Validators.min(1)]],
       loanTermFrequencyType: [2, [Validators.required]],
       interestRatePerPeriod: [null, [Validators.required, Validators.min(0)]],
-      expectedDisbursementDate: [this.settingsService.businessDate, [Validators.required]],
+      expectedDisbursementDate: [validDate, [Validators.required]],
       amortizationType: [1, [Validators.required]],
       interestType: [0, [Validators.required]],
       interestCalculationPeriodType: [1, [Validators.required]],
@@ -155,6 +159,15 @@ export class LoanSimulatorComponent implements OnInit {
           this.simulatorForm.get('loanTermFrequency')?.setValue(num * every, { emitEvent: false });
         }
       });
+
+    this.simulatorForm
+      .get('extraRepaymentEffect')
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        if (this.baselineSchedule) {
+          this.recalculateWithVariations();
+        }
+      });
   }
 
   onProductChange(productId: number): void {
@@ -174,7 +187,7 @@ export class LoanSimulatorComponent implements OnInit {
         const loanTermFrequencyType = template.termPeriodFrequencyType?.id ?? repaymentFrequencyType;
 
         this.simulatorForm.patchValue({
-          principal: template.principal ?? null,
+          principal: template.principal ?? template.approvedPrincipal ?? 10000,
           numberOfRepayments,
           repaymentEvery,
           repaymentFrequencyType,
@@ -277,9 +290,20 @@ export class LoanSimulatorComponent implements OnInit {
 
       this.installmentsFormArray.push(group);
     });
+
+    this.tableDataSource = [...this.installmentsFormArray.controls];
+  }
+
+  onInstallmentEmiChange(row: FormGroup): void {
+    row.get('isEmiModified')?.setValue(true, { emitEvent: false });
   }
 
   applyJuneDecemberAssistant(): void {
+    if (!this.baselineSchedule || !this.baselinePeriods.length) {
+      return;
+    }
+    this.populateInstallmentsFormArray(this.baselinePeriods);
+
     const formVal = this.simulatorForm.value;
     const juneExtra = +(formVal.juneExtraAmount || 0);
     const decemberExtra = +(formVal.decemberExtraAmount || 0);
@@ -311,7 +335,7 @@ export class LoanSimulatorComponent implements OnInit {
       Boolean(control.get('isEmiModified')?.value) ||
       Math.abs(
         +(control.get('proposedEmiAmount')?.value ?? 0) -
-          +(control.get('calculatedEmiAmount')?.value ?? this.baselineEmi)
+        +(control.get('calculatedEmiAmount')?.value ?? this.baselineEmi)
       ) > 0.01
     );
   }
@@ -324,56 +348,73 @@ export class LoanSimulatorComponent implements OnInit {
     const dateFormat = this.settingsService.dateFormat;
     const baseRate = +(this.simulatorForm.get('interestRatePerPeriod')?.value ?? 0);
 
-    this.installmentsFormArray.controls.forEach((control, i) => {
-      const period = control.get('period')?.value;
-      if (period >= targetRepayments) {
+    const controlsMap = new Map<number, FormGroup>();
+    this.installmentsFormArray.controls.forEach((c) => {
+      const p = c.get('period')?.value;
+      if (p !== null && p !== undefined) {
+        controlsMap.set(p, c);
+      }
+    });
+
+    this.baselinePeriods.forEach((bp) => {
+      const period = bp.period ?? 0;
+      if (period < 1 || period >= targetRepayments) {
         return;
       }
 
-      const baselinePeriod = this.baselinePeriods[i];
-      const applicableFromDate = baselinePeriod?.dueDate
-        ? this.dateUtils.formatDate(this.dateUtils.parseDate(baselinePeriod.dueDate), dateFormat)
-        : control.get('originalDueDate')?.value;
+      const applicableFromDate = this.dateUtils.formatDate(
+        this.dateUtils.parseDate(bp.dueDate),
+        dateFormat
+      );
+      const control = controlsMap.get(period);
 
-      const proposedDueDate: Date = control.get('proposedDueDate')?.value;
-      const formattedProposedDueDate = proposedDueDate
-        ? this.dateUtils.formatDate(proposedDueDate, dateFormat)
-        : applicableFromDate;
+      if (control) {
+        const proposedDueDate: Date = control.get('proposedDueDate')?.value;
+        const formattedProposedDueDate = proposedDueDate
+          ? this.dateUtils.formatDate(proposedDueDate, dateFormat)
+          : applicableFromDate;
 
-      if (formattedProposedDueDate !== applicableFromDate) {
-        variations.push({
-          termType: 'dueDate',
-          applicableFromDate,
-          dateValue: formattedProposedDueDate,
-          isSpecificToInstallment: true
-        });
-      }
-
-      const proposedInterestRate = control.get('proposedInterestRate')?.value;
-      if (
-        proposedInterestRate !== null &&
-        proposedInterestRate !== undefined &&
-        proposedInterestRate !== ''
-      ) {
-        if (Math.abs(+proposedInterestRate - baseRate) > 0.0001) {
+        if (formattedProposedDueDate !== applicableFromDate) {
           variations.push({
-            termType: 'interestRateFromInstallment',
+            termType: 'dueDate',
             applicableFromDate,
-            decimalValue: +proposedInterestRate,
-            isSpecificToInstallment: false
+            dateValue: formattedProposedDueDate,
+            isSpecificToInstallment: true
           });
         }
-      }
 
-      const proposedEmiAmount = +(control.get('proposedEmiAmount')?.value ?? 0);
-      const isEmiModified = this.isRowEmiModified(control);
-      if (isEmiModified) {
-        variations.push({
-          termType: 'emiAmount',
-          applicableFromDate,
-          decimalValue: +proposedEmiAmount,
-          isSpecificToInstallment: true
-        });
+        const proposedInterestRate = control.get('proposedInterestRate')?.value;
+        if (
+          proposedInterestRate !== null &&
+          proposedInterestRate !== undefined &&
+          proposedInterestRate !== ''
+        ) {
+          if (Math.abs(+proposedInterestRate - baseRate) > 0.0001) {
+            variations.push({
+              termType: 'interestRateFromInstallment',
+              applicableFromDate,
+              decimalValue: +proposedInterestRate,
+              isSpecificToInstallment: false
+            });
+          }
+        }
+
+        const isEmiModified = this.isRowEmiModified(control);
+        if (isEmiModified) {
+          variations.push({
+            termType: 'emiAmount',
+            applicableFromDate,
+            decimalValue: +(control.get('proposedEmiAmount')?.value ?? 0),
+            isSpecificToInstallment: true
+          });
+        } else if (mode === 'REDUCE_TERM') {
+          variations.push({
+            termType: 'emiAmount',
+            applicableFromDate,
+            decimalValue: +this.baselineEmi,
+            isSpecificToInstallment: true
+          });
+        }
       } else if (mode === 'REDUCE_TERM') {
         variations.push({
           termType: 'emiAmount',
@@ -403,111 +444,39 @@ export class LoanSimulatorComponent implements OnInit {
 
     this.isLoading = true;
 
-    if (mode === 'REDUCE_EMI') {
-      const payload: LoanScheduleSimulationPayload = {
-        clientId: +formVal.clientId,
-        productId: +formVal.productId,
-        loanType: 'individual',
-        locale,
-        dateFormat,
-        principal: +formVal.principal,
-        loanTermFrequency: this.originalNumberOfRepayments * repaymentEvery,
-        loanTermFrequencyType: +formVal.loanTermFrequencyType,
-        numberOfRepayments: this.originalNumberOfRepayments,
-        repaymentEvery,
-        repaymentFrequencyType: +formVal.repaymentFrequencyType,
-        interestRatePerPeriod: +formVal.interestRatePerPeriod,
-        amortizationType: +formVal.amortizationType,
-        interestType: +formVal.interestType,
-        interestCalculationPeriodType: +formVal.interestCalculationPeriodType,
-        expectedDisbursementDate,
-        submittedOnDate: expectedDisbursementDate,
-        transactionProcessingStrategyCode: formVal.transactionProcessingStrategyCode,
-        loanTermVariations: this.buildVariationsForTarget(this.originalNumberOfRepayments, 'REDUCE_EMI')
-      };
+    const payload: LoanScheduleSimulationPayload = {
+      clientId: +formVal.clientId,
+      productId: +formVal.productId,
+      loanType: 'individual',
+      locale,
+      dateFormat,
+      principal: +formVal.principal,
+      loanTermFrequency: this.originalNumberOfRepayments * repaymentEvery,
+      loanTermFrequencyType: +formVal.loanTermFrequencyType,
+      numberOfRepayments: this.originalNumberOfRepayments,
+      repaymentEvery,
+      repaymentFrequencyType: +formVal.repaymentFrequencyType,
+      interestRatePerPeriod: +formVal.interestRatePerPeriod,
+      amortizationType: +formVal.amortizationType,
+      interestType: +formVal.interestType,
+      interestCalculationPeriodType: +formVal.interestCalculationPeriodType,
+      expectedDisbursementDate,
+      submittedOnDate: expectedDisbursementDate,
+      transactionProcessingStrategyCode: formVal.transactionProcessingStrategyCode,
+      loanTermVariations: this.buildVariationsForTarget(this.originalNumberOfRepayments, mode)
+    };
 
-      this.loansService.calculateLoanSchedule(payload).subscribe({
-        next: (response: RepaymentSchedule) => {
-          this.updateCurrentSchedule(response);
-          this.isLoading = false;
-          this.cdr.markForCheck();
-        },
-        error: () => {
-          this.isLoading = false;
-          this.cdr.markForCheck();
-        }
-      });
-    } else {
-      let totalExtraPrincipal = 0;
-      this.installmentsFormArray.controls.forEach((control) => {
-        const period = control.get('period')?.value;
-        if (period < this.originalNumberOfRepayments && this.isRowEmiModified(control)) {
-          const proposedEmi = +(control.get('proposedEmiAmount')?.value ?? 0);
-          totalExtraPrincipal += Math.max(0, proposedEmi - this.baselineEmi);
-        }
-      });
-
-      const estimatedReducedPeriods = Math.floor(totalExtraPrincipal / (this.baselineEmi || 1));
-      let targetRepayments = Math.max(1, this.originalNumberOfRepayments - estimatedReducedPeriods);
-
-      const executeSimulation = (target: number) => {
-        const payload: LoanScheduleSimulationPayload = {
-          clientId: +formVal.clientId,
-          productId: +formVal.productId,
-          loanType: 'individual',
-          locale,
-          dateFormat,
-          principal: +formVal.principal,
-          loanTermFrequency: target * repaymentEvery,
-          loanTermFrequencyType: +formVal.loanTermFrequencyType,
-          numberOfRepayments: target,
-          repaymentEvery,
-          repaymentFrequencyType: +formVal.repaymentFrequencyType,
-          interestRatePerPeriod: +formVal.interestRatePerPeriod,
-          amortizationType: +formVal.amortizationType,
-          interestType: +formVal.interestType,
-          interestCalculationPeriodType: +formVal.interestCalculationPeriodType,
-          expectedDisbursementDate,
-          submittedOnDate: expectedDisbursementDate,
-          transactionProcessingStrategyCode: formVal.transactionProcessingStrategyCode,
-          loanTermVariations: this.buildVariationsForTarget(target, 'REDUCE_TERM')
-        };
-        return this.loansService.calculateLoanSchedule(payload);
-      };
-
-      executeSimulation(targetRepayments)
-        .pipe(
-          switchMap((response: RepaymentSchedule) => {
-            const periods = (response.periods || []).filter((p) => (p.period ?? 0) >= 1);
-            const lastPeriod = periods[periods.length - 1];
-            const zeroPeriodsCount = periods.filter((p) => (p.principalDue ?? 0) <= 0).length;
-
-            if (
-              lastPeriod &&
-              lastPeriod.totalDueForPeriod > this.baselineEmi * 1.05 &&
-              targetRepayments < this.originalNumberOfRepayments
-            ) {
-              targetRepayments += 1;
-              return executeSimulation(targetRepayments);
-            } else if (zeroPeriodsCount > 0) {
-              targetRepayments = Math.max(1, targetRepayments - zeroPeriodsCount);
-              return executeSimulation(targetRepayments);
-            }
-            return of(response);
-          })
-        )
-        .subscribe({
-          next: (finalResponse: RepaymentSchedule) => {
-            this.updateCurrentSchedule(finalResponse);
-            this.isLoading = false;
-            this.cdr.markForCheck();
-          },
-          error: () => {
-            this.isLoading = false;
-            this.cdr.markForCheck();
-          }
-        });
-    }
+    this.loansService.calculateLoanSchedule(payload).subscribe({
+      next: (response: RepaymentSchedule) => {
+        this.updateCurrentSchedule(response);
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   private updateCurrentSchedule(schedule: RepaymentSchedule): void {
@@ -552,6 +521,8 @@ export class LoanSimulatorComponent implements OnInit {
 
       this.installmentsFormArray.push(group);
     });
+
+    this.tableDataSource = [...this.installmentsFormArray.controls];
   }
 
   restoreBaseline(): void {
@@ -571,7 +542,7 @@ export class LoanSimulatorComponent implements OnInit {
     return Math.max(
       0,
       (this.baselineSchedule?.totalInterestCharged ?? 0) -
-        (this.currentSchedule?.totalInterestCharged ?? 0)
+      (this.currentSchedule?.totalInterestCharged ?? 0)
     );
   }
 
@@ -580,6 +551,111 @@ export class LoanSimulatorComponent implements OnInit {
       (p) => (p.period ?? 0) >= 1
     ).length;
     return Math.max(0, this.originalNumberOfRepayments - currentPeriods);
+  }
+
+  exportToPDF(): void {
+    if (!this.currentSchedule) {
+      return;
+    }
+
+    const options: jsPDFOptions = {
+      orientation: 'l',
+      unit: 'pt',
+      format: 'letter',
+      precision: 2,
+      compress: true
+    };
+    const pdf = new jsPDF(options);
+
+    const formVal = this.simulatorForm.value;
+    const productName =
+      this.loanProducts.find((p) => p.id === formVal.productId)?.name || '';
+
+    const title = this.translateService.instant('labels.heading.Loan Simulator');
+    const genDate = this.dateUtils.formatDate(
+      new Date(),
+      this.settingsService.dateFormat
+    );
+
+    pdf.setFontSize(14);
+    pdf.text(title, 40, 40);
+
+    pdf.setFontSize(9);
+    pdf.text(
+      `${this.translateService.instant('labels.inputs.Date')}: ${genDate}`,
+      40,
+      55
+    );
+
+    const principalStr = `${formVal.principal} ${this.currencyCode}`;
+    const termStr = `${this.originalNumberOfRepayments} -> ${this.installmentsFormArray.length}`;
+    const rateStr = `${formVal.interestRatePerPeriod}%`;
+
+    pdf.text(
+      `${this.translateService.instant('labels.inputs.Select Loan Product')}: ${productName}   |   ` +
+        `${this.translateService.instant('labels.inputs.Principal')}: ${principalStr}   |   ` +
+        `${this.translateService.instant('labels.inputs.Loan Term')}: ${termStr}   |   ` +
+        `${this.translateService.instant('labels.inputs.Nominal interest rate')}: ${rateStr}`,
+      40,
+      72
+    );
+
+    const origInterest = (this.baselineSchedule?.totalInterestCharged ?? 0).toFixed(2);
+    const projInterest = (this.currentSchedule?.totalInterestCharged ?? 0).toFixed(2);
+    const intSavings = this.interestSavings.toFixed(2);
+    const instSaved = this.installmentsSaved;
+
+    pdf.text(
+      `${this.translateService.instant('labels.inputs.Original Interest')}: ${origInterest}   |   ` +
+        `${this.translateService.instant('labels.inputs.Projected Interest')}: ${projInterest}   |   ` +
+        `${this.translateService.instant('labels.inputs.Total Interest Savings')}: ${intSavings}   |   ` +
+        `${this.translateService.instant('labels.inputs.Installments Reduced')}: ${instSaved}`,
+      40,
+      87
+    );
+
+    const head = [
+      [
+        '#',
+        this.translateService.instant('labels.inputs.Date'),
+        this.translateService.instant('labels.inputs.Proposed Due Date'),
+        this.translateService.instant('labels.inputs.Principal'),
+        this.translateService.instant('labels.inputs.Interest'),
+        this.translateService.instant('labels.inputs.Proposed Installment'),
+        this.translateService.instant('labels.inputs.Balance of loan')
+      ]
+    ];
+
+    const body = this.installmentsFormArray.controls.map((row) => [
+      row.get('period')?.value,
+      row.get('originalDueDate')?.value ?? '',
+      this.dateUtils.formatDate(
+        row.get('proposedDueDate')?.value,
+        this.settingsService.dateFormat
+      ),
+      (+row.get('principalDue')?.value || 0).toFixed(2),
+      (+row.get('interestDue')?.value || 0).toFixed(2),
+      (+row.get('proposedEmiAmount')?.value || 0).toFixed(2),
+      (+row.get('balanceOfLoan')?.value || 0).toFixed(2)
+    ]);
+
+    autoTable(pdf, {
+      startY: 102,
+      head,
+      body,
+      styles: { fontSize: 9, halign: 'right' },
+      columnStyles: {
+        0: { halign: 'center' },
+        1: { halign: 'center' },
+        2: { halign: 'center' }
+      }
+    });
+
+    const fileNameDate = this.dateUtils.formatDate(
+      new Date(),
+      Dates.DEFAULT_DATEFORMAT
+    );
+    pdf.save(`loan-simulation-${fileNameDate}.pdf`);
   }
 }
 
