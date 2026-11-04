@@ -38,6 +38,7 @@ import { GlimAccountComponent } from './glim-account/glim-account.component';
 import { CreateGlimAccountComponent } from './glim-account/create-glim-account/create-glim-account.component';
 import { LoanBuyDownFeesTabComponent } from './loans-view/loan-buy-down-fees-tab/loan-buy-down-fees-tab.component';
 import { LoanAccountDashboardComponent } from './loans-view/loan-account-dashboard/loan-account-dashboard.component';
+import { LoanSimulatorComponent } from './loan-simulator/loan-simulator.component';
 
 /** Custom Resolvers */
 import { LoanDetailsResolver } from './common-resolvers/loan-details.resolver';
@@ -105,6 +106,14 @@ const routes: Routes = [
           loansAccountTemplate: LoansAccountTemplateResolver,
           loanProductsBasicDetails: LoanProductsResolver,
           loanOriginatorsData: LoanOriginatorsCatalogResolver
+        }
+      },
+      {
+        path: 'simulator',
+        data: { title: 'Loan Simulator', breadcrumb: 'Simulator', routeParamBreadcrumb: false },
+        component: LoanSimulatorComponent,
+        resolve: {
+          loanProductsBasicDetails: LoanProductsResolver
         }
       },
       {

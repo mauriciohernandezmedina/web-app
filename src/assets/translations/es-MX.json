@@ -527,6 +527,10 @@
       "Home": "Inicio"
     },
     "buttons": {
+      "Simulate Base Schedule": "Simular Cronograma Base",
+      "Apply June/December Extras": "Aplicar Extras Junio/Diciembre",
+      "Recalculate with Variations": "Recalcular con Variaciones",
+      "Restore Original Schedule": "Restaurar Cronograma Base",
       "Accept Transfer": "Aceptar transferencia",
       "Actions": "Acciones",
       "Activate": "Activar",
@@ -1186,6 +1190,9 @@
       "NotEqual": "No igual"
     },
     "heading": {
+      "Loan Simulator": "Simulador y Cotizador de Crédito",
+      "Extraordinary Abonos Assistant": "Asistente de Abonos Extraordinarios (Junio / Diciembre)",
+      "Simulation Comparison": "Resumen de Ahorro y Plazo",
       "Create Agriculture Loan": "Crear Crédito Agrícola",
       "Create Auto Loan": "Crear Crédito Automotriz",
       "Create BNPL Loan": "Crear Crédito BNPL",
@@ -1806,6 +1813,18 @@
       "Recovery": "Recuperación"
     },
     "inputs": {
+      "Extra Repayment Effect": "Efecto del Abono Extraordinario",
+      "Reduce Installment Amount (Keep Term)": "Reducir Valor de Cuota (Mantener Plazo)",
+      "Reduce Loan Term (Keep Regular Installment)": "Reducir Plazo (Mantener Cuota Ordinaria)",
+      "June Extra Amount": "Abono Extra Junio",
+      "December Extra Amount": "Abono Extra Diciembre",
+      "Proposed Due Date": "Fecha de Vencimiento Propuesta",
+      "Proposed Installment": "Cuota Propuesta",
+      "Proposed Interest Rate": "Tasa de Interés Propuesta",
+      "Original Interest": "Interés Original",
+      "Projected Interest": "Interés Proyectado",
+      "Total Interest Savings": "Ahorro Total en Intereses",
+      "Installments Reduced": "Cuotas Reducidas",
       "Account moves out of NPA only on arrears completion": "La cuenta sale de NPA solo tras liquidar todos los atrasos",
       "Allow amortization override": "Permitir anular la amortización",
       "Allow approval/disbursal above applied amount": "Permitir aprobación/desembolso por encima del monto solicitado",
@@ -3846,6 +3865,7 @@
       "Link to payment system": "Vincular al sistema de pago",
       "Loan Screen Report": "Reporte de pantalla de Crédito",
       "Loan Screen Reports": "Reportes de pantalla de Créditos",
+      "Loan Simulator": "Simulador de Crédito",
       "Loans": "Créditos",
       "Main Items": "Artículos principales",
       "Make Repayment": "Realizar pago",

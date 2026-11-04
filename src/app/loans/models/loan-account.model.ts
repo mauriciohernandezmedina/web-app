@@ -202,3 +202,43 @@ export interface DelinquencyRangeSchedule {
   delinquentDays?: number;
   delinquentAmount?: number;
 }
+
+export type LoanTermVariationType =
+  | 'emiAmount'
+  | 'dueDate'
+  | 'interestRateFromInstallment'
+  | 'principalAmount'
+  | 'graceOnPrincipal'
+  | 'graceOnInterest';
+
+export type ExtraRepaymentEffectMode = 'REDUCE_EMI' | 'REDUCE_TERM';
+
+export interface LoanTermVariationItem {
+  termType: LoanTermVariationType;
+  applicableFromDate: string;
+  decimalValue?: number;
+  dateValue?: string;
+  isSpecificToInstallment: boolean;
+}
+
+export interface LoanScheduleSimulationPayload {
+  clientId: number;
+  productId: number;
+  loanType: 'individual';
+  locale: string;
+  dateFormat: string;
+  principal: number;
+  loanTermFrequency: number;
+  loanTermFrequencyType: number;
+  numberOfRepayments: number;
+  repaymentEvery: number;
+  repaymentFrequencyType: number;
+  interestRatePerPeriod: number;
+  amortizationType: number;
+  interestType: number;
+  interestCalculationPeriodType: number;
+  expectedDisbursementDate: string;
+  submittedOnDate: string;
+  transactionProcessingStrategyCode: string;
+  loanTermVariations?: LoanTermVariationItem[];
+}

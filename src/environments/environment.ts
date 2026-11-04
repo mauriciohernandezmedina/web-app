@@ -159,6 +159,7 @@ export const environment = {
   /** CB-ILD feature flag — set cbIldEnabled=true in env to show CB-ILD tabs */
   cbIldEnabled: loadedEnv.cbIldEnabled === 'true' || loadedEnv.cbIldEnabled === true || false,
   pluginBaseUrl: loadedEnv.pluginBaseUrl || 'http://localhost:8084',
+  defaultSimulatorClientId: Number(loadedEnv['defaultSimulatorClientId']) || 1,
   OIDC: {
     // Support legacy FINERACT_PLUGIN_OIDC_* variable names for backward compatibility
     oidcServerEnabled:

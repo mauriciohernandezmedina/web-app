@@ -530,6 +530,10 @@
       "Home": "Home"
     },
     "buttons": {
+      "Simulate Base Schedule": "Simulate Base Schedule",
+      "Apply June/December Extras": "Apply June/December Extras",
+      "Recalculate with Variations": "Recalculate with Variations",
+      "Restore Original Schedule": "Restore Original Schedule",
       "Accept Transfer": "Accept Transfer",
       "Actions": "Actions",
       "Activate": "Activate",
@@ -1191,6 +1195,9 @@
       "NotEqual": "Not equal"
     },
     "heading": {
+      "Loan Simulator": "Loan Simulator",
+      "Extraordinary Abonos Assistant": "Extraordinary Repayments Assistant (June / December)",
+      "Simulation Comparison": "Savings & Term Summary",
       "Create Agriculture Loan": "Create Agriculture Loan",
       "Create Auto Loan": "Create Auto Loan",
       "Create BNPL Loan": "Create BNPL Loan",
@@ -1814,6 +1821,18 @@
       "Recovery": "Recovery"
     },
     "inputs": {
+      "Extra Repayment Effect": "Extra Repayment Effect",
+      "Reduce Installment Amount (Keep Term)": "Reduce Installment Amount (Keep Term)",
+      "Reduce Loan Term (Keep Regular Installment)": "Reduce Loan Term (Keep Regular Installment)",
+      "June Extra Amount": "June Extra Amount",
+      "December Extra Amount": "December Extra Amount",
+      "Proposed Due Date": "Proposed Due Date",
+      "Proposed Installment": "Proposed Installment",
+      "Proposed Interest Rate": "Proposed Interest Rate",
+      "Original Interest": "Original Interest",
+      "Projected Interest": "Projected Interest",
+      "Total Interest Savings": "Total Interest Savings",
+      "Installments Reduced": "Installments Reduced",
       "Account moves out of NPA only on arrears completion": "Account moves out of NPA only on arrears completion",
       "Allow amortization override": "Allow amortization override",
       "Allow approval/disbursal above applied amount": "Allow approval/disbursal above applied amount",
@@ -3864,6 +3883,7 @@
       "Link to payment system": "Link to payment system",
       "Loan Screen Report": "Loan Screen Report",
       "Loan Screen Reports": "Loan Screen Reports",
+      "Loan Simulator": "Loan Simulator",
       "Loans": "Loans",
       "Main Items": "Main Items",
       "Make Repayment": "Make Repayment",

@@ -17,7 +17,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 export type LoanAccountPath = 'loans' | 'working-capital-loans';
 import { Dates } from 'app/core/utils/dates';
 import { SettingsService } from 'app/settings/settings.service';
-import { DisbursementData } from './models/loan-account.model';
+import { DisbursementData, LoanScheduleSimulationPayload, RepaymentSchedule } from './models/loan-account.model';
 import { PeriodPaymentRateChange } from './models/working-capital-loan-account.model';
 import { BreachSchedule } from './models/working-capital-loan-account.model';
 import {
@@ -875,7 +875,7 @@ export class LoansService {
     return this.http.post('/batches?enclosingTransaction=true', payload);
   }
 
-  calculateLoanSchedule(payload: any): Observable<any> {
+  calculateLoanSchedule(payload: LoanScheduleSimulationPayload | any): Observable<RepaymentSchedule | any> {
     return this.http.post('/loans?command=calculateLoanSchedule', payload);
   }
 
