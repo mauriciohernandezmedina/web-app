@@ -64,6 +64,14 @@
       ></mifosx-saving-product-settings-step>
     </mat-step>
 
+    <mat-step [stepControl]="savingProductInterestRateChartForm">
+      <ng-template matStepLabel>{{ 'labels.inputs.INTEREST RATE CHART' | translate }}</ng-template>
+
+      <mifosx-saving-product-interest-rate-chart-step
+        [savingProductsTemplate]="savingProductsTemplate"
+      ></mifosx-saving-product-interest-rate-chart-step>
+    </mat-step>
+
     <mat-step>
       <ng-template matStepLabel>{{ 'labels.inputs.CHARGES' | translate }}</ng-template>
 

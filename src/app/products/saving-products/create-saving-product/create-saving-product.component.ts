@@ -7,7 +7,8 @@
  */
 
 /** Angular Imports */
-import { ChangeDetectionStrategy, Component, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, ViewChild, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 /** Custom Components */
@@ -15,6 +16,7 @@ import { SavingProductDetailsStepComponent } from '../saving-product-stepper/sav
 import { SavingProductCurrencyStepComponent } from '../saving-product-stepper/saving-product-currency-step/saving-product-currency-step.component';
 import { SavingProductTermsStepComponent } from '../saving-product-stepper/saving-product-terms-step/saving-product-terms-step.component';
 import { SavingProductSettingsStepComponent } from '../saving-product-stepper/saving-product-settings-step/saving-product-settings-step.component';
+import { SavingProductInterestRateChartStepComponent } from '../saving-product-stepper/saving-product-interest-rate-chart-step/saving-product-interest-rate-chart-step.component';
 import { SavingProductChargesStepComponent } from '../saving-product-stepper/saving-product-charges-step/saving-product-charges-step.component';
 import { SavingProductAccountingStepComponent } from '../saving-product-stepper/saving-product-accounting-step/saving-product-accounting-step.component';
 
@@ -42,18 +44,20 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     SavingProductCurrencyStepComponent,
     SavingProductTermsStepComponent,
     SavingProductSettingsStepComponent,
+    SavingProductInterestRateChartStepComponent,
     SavingProductChargesStepComponent,
     SavingProductAccountingStepComponent,
     SavingProductPreviewStepComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CreateSavingProductComponent {
+export class CreateSavingProductComponent implements AfterViewInit {
   private route = inject(ActivatedRoute);
   private productsService = inject(ProductsService);
   private router = inject(Router);
   private settingsService = inject(SettingsService);
   private accounting = inject(Accounting);
+  private destroyRef = inject(DestroyRef);
 
   @ViewChild(SavingProductDetailsStepComponent, { static: true })
   savingProductDetailsStep: SavingProductDetailsStepComponent;
@@ -62,6 +66,8 @@ export class CreateSavingProductComponent {
   @ViewChild(SavingProductTermsStepComponent, { static: true }) savingProductTermsStep: SavingProductTermsStepComponent;
   @ViewChild(SavingProductSettingsStepComponent, { static: true })
   savingProductSettingsStep: SavingProductSettingsStepComponent;
+  @ViewChild(SavingProductInterestRateChartStepComponent, { static: true })
+  savingProductInterestRateChartStep: SavingProductInterestRateChartStepComponent;
   @ViewChild(SavingProductChargesStepComponent, { static: true })
   savingProductChargesStep: SavingProductChargesStepComponent;
   @ViewChild(SavingProductAccountingStepComponent, { static: true })
@@ -100,6 +106,10 @@ export class CreateSavingProductComponent {
     return this.savingProductSettingsStep.savingProductSettingsForm;
   }
 
+  get savingProductInterestRateChartForm() {
+    return this.savingProductInterestRateChartStep.savingProductInterestRateChartForm;
+  }
+
   get savingProductAccountingForm() {
     return this.savingProductAccountingStep.savingProductAccountingForm;
   }
@@ -110,16 +120,30 @@ export class CreateSavingProductComponent {
       this.savingProductCurrencyForm.valid &&
       this.savingProductTermsForm.valid &&
       this.savingProductSettingsForm.valid &&
+      this.savingProductInterestRateChartForm.valid &&
       this.savingProductAccountingForm.valid
     );
   }
 
+  ngAfterViewInit() {
+    this.savingProductInterestRateChartForm.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        const hasCharts = this.savingProductInterestRateChartStep?.charts?.length > 0;
+        this.savingProductTermsStep?.setNominalRateLockedByChart(hasCharts);
+      });
+  }
+
   get savingProduct() {
+    const chartData = this.savingProductInterestRateChartStep.savingProductInterestRateChart;
+    const hasCharts = Array.isArray(chartData?.charts) && chartData.charts.length > 0;
     return {
       ...this.savingProductDetailsStep.savingProductDetails,
       ...this.savingProductCurrencyStep.savingProductCurrency,
       ...this.savingProductTermsStep.savingProductTerms,
+      ...(hasCharts ? { nominalAnnualInterestRate: 0 } : {}),
       ...this.savingProductSettingsStep.savingProductSettings,
+      ...chartData,
       ...this.savingProductChargesStep.savingProductCharges,
       ...this.savingProductAccountingStep.savingProductAccounting
     };

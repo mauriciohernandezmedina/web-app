@@ -48,6 +48,7 @@ import { SavingProductTermsStepComponent } from './saving-products/saving-produc
 import { SavingProductSettingsStepComponent } from './saving-products/saving-product-stepper/saving-product-settings-step/saving-product-settings-step.component';
 import { SavingProductChargesStepComponent } from './saving-products/saving-product-stepper/saving-product-charges-step/saving-product-charges-step.component';
 import { SavingProductAccountingStepComponent } from './saving-products/saving-product-stepper/saving-product-accounting-step/saving-product-accounting-step.component';
+import { SavingProductInterestRateChartStepComponent } from './saving-products/saving-product-stepper/saving-product-interest-rate-chart-step/saving-product-interest-rate-chart-step.component';
 import { SavingProductPreviewStepComponent } from './saving-products/saving-product-stepper/saving-product-preview-step/saving-product-preview-step.component';
 import { CreateSavingProductComponent } from './saving-products/create-saving-product/create-saving-product.component';
 import { ViewSavingProductComponent } from './saving-products/view-saving-product/view-saving-product.component';
@@ -188,6 +189,7 @@ import { LoanProductSelectionComponent } from './loan-products/create-loan-produ
     SavingProductSettingsStepComponent,
     SavingProductChargesStepComponent,
     SavingProductAccountingStepComponent,
+    SavingProductInterestRateChartStepComponent,
     SavingProductPreviewStepComponent,
     CreateSavingProductComponent,
     ViewSavingProductComponent,

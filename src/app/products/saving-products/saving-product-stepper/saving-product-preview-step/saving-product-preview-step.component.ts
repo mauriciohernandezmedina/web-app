@@ -36,6 +36,7 @@ import { ViewSavingsAccountingDetailsComponent } from '../../../../shared/accoun
 import { MatStepperPrevious } from '@angular/material/stepper';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { FindPipe } from '../../../../pipes/find.pipe';
+import { DateFormatPipe } from '../../../../pipes/date-format.pipe';
 import { FormatNumberPipe } from '../../../../pipes/format-number.pipe';
 import { YesnoPipe } from '../../../../pipes/yesno.pipe';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
@@ -61,6 +62,7 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatStepperPrevious,
     FaIconComponent,
     FindPipe,
+    DateFormatPipe,
     FormatNumberPipe,
     YesnoPipe
   ],
@@ -88,6 +90,12 @@ export class SavingProductPreviewStepComponent implements OnInit, OnChanges {
   feesPenaltyIncomeDisplayedColumns: string[] = [
     'chargeId',
     'incomeAccountId'
+  ];
+  chartSlabsDisplayedColumns: string[] = [
+    'amountRange',
+    'period',
+    'annualInterestRate',
+    'description'
   ];
 
   accountingMappings: any = {};

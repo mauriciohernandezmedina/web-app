@@ -14,6 +14,19 @@ import { ExternalIdentifierComponent } from '../../../shared/external-identifier
 import { DateFormatPipe } from '../../../pipes/date-format.pipe';
 import { FormatNumberPipe } from '../../../pipes/format-number.pipe';
 import { YesnoPipe } from '../../../pipes/yesno.pipe';
+import {
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow
+} from '@angular/material/table';
+import { MatDivider } from '@angular/material/divider';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 @Component({
@@ -26,7 +39,18 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     CurrencyPipe,
     DateFormatPipe,
     FormatNumberPipe,
-    YesnoPipe
+    YesnoPipe,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    MatDivider
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -40,6 +64,8 @@ export class GeneralTabComponent {
 
   savingsAccountData: any;
   currency: Currency;
+
+  chartSlabsDisplayedColumns: string[] = ['amountRange', 'period', 'annualInterestRate', 'description'];
 
   constructor() {
     this.route.parent.parent.data.subscribe((data: { savingsAccountData: any }) => {
