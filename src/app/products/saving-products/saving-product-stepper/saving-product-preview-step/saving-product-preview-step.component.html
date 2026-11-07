@@ -195,6 +195,83 @@
     </div>
   }
 
+  @if (savingProduct.charts?.length > 0) {
+    <div class="layout-row-wrap responsive-column flex-100">
+      <h3 class="mat-h3 flex-100">{{ 'labels.heading.Interest Rate Charts' | translate }}</h3>
+      <mat-divider class="flex-100"></mat-divider>
+      @for (chart of savingProduct.charts; track chart; let chartIndex = $index) {
+        <div class="layout-row-wrap responsive-column flex-100">
+          @if (chart.name) {
+            <div class="layout-row flex-100">
+              <span class="flex-40">{{ 'labels.inputs.Name' | translate }}:</span>
+              <span class="flex-60">{{ chart.name }}</span>
+            </div>
+          }
+          @if (chart.description) {
+            <div class="layout-row flex-100">
+              <span class="flex-40">{{ 'labels.inputs.Description' | translate }}:</span>
+              <span class="flex-60">{{ chart.description }}</span>
+            </div>
+          }
+          <div class="layout-row flex-100">
+            <span class="flex-40">{{ 'labels.inputs.From Date' | translate }}:</span>
+            <span class="flex-60">{{ chart.fromDate | dateFormat }}</span>
+          </div>
+          @if (chart.endDate) {
+            <div class="layout-row flex-100">
+              <span class="flex-40">{{ 'labels.inputs.End Date' | translate }}:</span>
+              <span class="flex-60">{{ chart.endDate | dateFormat }}</span>
+            </div>
+          }
+          <div class="flex-100 layout-row">
+            <span class="flex-40">{{ 'labels.inputs.Primary Grouping by Amount' | translate }}:</span>
+            <span class="flex-60">{{ chart.isPrimaryGroupingByAmount | yesNo }}</span>
+          </div>
+          @if (chart.chartSlabs?.length) {
+            <table class="mat-elevation-z1 flex-100" mat-table [dataSource]="chart.chartSlabs">
+              <ng-container matColumnDef="amountRange">
+                <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Amount Range' | translate }}</th>
+                <td mat-cell *matCellDef="let chartSlab">
+                  {{ chartSlab.amountRangeFrom | formatNumber }} - {{ chartSlab.amountRangeTo ? (chartSlab.amountRangeTo | formatNumber) : '' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="period">
+                <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Period' | translate }}</th>
+                <td mat-cell *matCellDef="let chartSlab">
+                  @if (!chartSlab.fromPeriod || !chartSlab.periodType || chartSlab.periodType === 5 || chartSlab.periodType?.id === 5) {
+                    <span>-</span>
+                  } @else {
+                    <span>{{
+                      chartSlab.fromPeriod +
+                        ' - ' +
+                        (chartSlab.toPeriod || '') +
+                        ' ' +
+                        (chartSlab.periodType | find: savingProductsTemplate?.chartTemplate?.periodTypes : 'id' : 'value')
+                    }}</span>
+                  }
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="annualInterestRate">
+                <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Interest' | translate }}</th>
+                <td mat-cell *matCellDef="let chartSlab">
+                  {{ chartSlab.annualInterestRate }} %
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Description' | translate }}</th>
+                <td mat-cell *matCellDef="let chartSlab">
+                  {{ chartSlab.description }}
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="chartSlabsDisplayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: chartSlabsDisplayedColumns"></tr>
+            </table>
+          }
+        </div>
+      }
+    </div>
+  }
+
   @if (savingProduct.charges.length) {
     <div class="layout-row-wrap responsive-column flex-100">
       <h3 class="mat-h3 flex-100">{{ 'labels.inputs.Charges' | translate }}</h3>

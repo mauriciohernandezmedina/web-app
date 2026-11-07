@@ -9,6 +9,8 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 const OPTIONAL_SLAB_BOUND_FIELDS = [
+  'periodType',
+  'fromPeriod',
   'toPeriod',
   'amountRangeFrom',
   'amountRangeTo'
@@ -82,7 +84,11 @@ function getContinuousRangeError(ranges: SlabRange[]): SlabRangeError | null {
 }
 
 function getSlabsRangeError(slabs: any[], isPrimaryGroupingByAmount: boolean): SlabRangeError | null {
-  const periodTypes = new Set(slabs.filter((slab) => hasValue(slab.periodType)).map((slab) => Number(slab.periodType)));
+  const periodTypes = new Set(
+    slabs
+      .filter((slab) => hasValue(slab.periodType) && Number(slab.periodType) !== 5)
+      .map((slab) => Number(slab.periodType))
+  );
   if (periodTypes.size > 1) {
     return { type: 'periodTypeMismatch' };
   }
@@ -141,6 +147,9 @@ export function normalizeDepositProductInterestRateCharts<T extends { charts?: a
             delete normalizedSlab[field];
           }
         });
+        if (Number(normalizedSlab.periodType) === 5) {
+          delete normalizedSlab.periodType;
+        }
         return normalizedSlab;
       })
     }))

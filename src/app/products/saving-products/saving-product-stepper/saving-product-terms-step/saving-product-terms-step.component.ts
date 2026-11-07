@@ -55,6 +55,24 @@ export class SavingProductTermsStepComponent implements OnInit {
       interestCalculationType: this.savingProductsTemplate.interestCalculationType.id,
       interestCalculationDaysInYearType: this.savingProductsTemplate.interestCalculationDaysInYearType.id
     });
+
+    const hasInitialChart =
+      this.savingProductsTemplate?.charts?.length > 0 ||
+      this.savingProductsTemplate?.activeChart?.chartSlabs?.length > 0;
+    this.setNominalRateLockedByChart(hasInitialChart);
+  }
+
+  setNominalRateLockedByChart(locked: boolean): void {
+    const nominalControl = this.savingProductTermsForm.get('nominalAnnualInterestRate');
+    if (!nominalControl) {
+      return;
+    }
+    if (locked) {
+      nominalControl.setValue(0, { emitEvent: false });
+      nominalControl.disable({ emitEvent: false });
+    } else {
+      nominalControl.enable({ emitEvent: false });
+    }
   }
 
   createSavingProductTermsForm() {
@@ -86,6 +104,6 @@ export class SavingProductTermsStepComponent implements OnInit {
   }
 
   get savingProductTerms() {
-    return this.savingProductTermsForm.value;
+    return this.savingProductTermsForm.getRawValue();
   }
 }

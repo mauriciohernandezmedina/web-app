@@ -222,4 +222,96 @@ describe('Deposit product interest rate chart utils', () => {
       description: 'Open ended bounds'
     });
   });
+
+  it('accepts amount-grouped slabs without periodType or fromPeriod', () => {
+    const chartSlabs = createChartSlabsControl(
+      [
+        {
+          amountRangeFrom: 0,
+          amountRangeTo: 10000,
+          annualInterestRate: 3.0,
+          description: 'Tier 1'
+        },
+        {
+          amountRangeFrom: 10001,
+          amountRangeTo: 50000,
+          annualInterestRate: 6.0,
+          description: 'Tier 2'
+        },
+        {
+          amountRangeFrom: 50001,
+          annualInterestRate: 9.0,
+          description: 'Tier 3'
+        }
+      ],
+      true
+    );
+
+    expect(chartSlabs.errors).toBeNull();
+  });
+
+  it('ignores periodType 5 (Invalid) in amount-grouped slabs', () => {
+    const chartSlabs = createChartSlabsControl(
+      [
+        {
+          periodType: 5,
+          amountRangeFrom: 0,
+          amountRangeTo: 10000,
+          annualInterestRate: 3.0,
+          description: 'Tier 1'
+        },
+        {
+          periodType: '',
+          amountRangeFrom: 10001,
+          amountRangeTo: 50000,
+          annualInterestRate: 6.0,
+          description: 'Tier 2'
+        }
+      ],
+      true
+    );
+
+    expect(chartSlabs.errors).toBeNull();
+  });
+
+  it('removes blank periodType, fromPeriod and periodType 5 during normalization', () => {
+    const payload = normalizeDepositProductInterestRateCharts({
+      charts: [
+        {
+          chartSlabs: [
+            {
+              periodType: 5,
+              fromPeriod: '',
+              toPeriod: '',
+              amountRangeFrom: 0,
+              amountRangeTo: 10000,
+              annualInterestRate: 3.0,
+              description: 'Tier 1'
+            },
+            {
+              periodType: '',
+              fromPeriod: null,
+              toPeriod: undefined,
+              amountRangeFrom: 10001,
+              amountRangeTo: '',
+              annualInterestRate: 6.0,
+              description: 'Tier 2'
+            }
+          ]
+        }
+      ]
+    });
+
+    expect(payload.charts[0].chartSlabs[0]).toEqual({
+      amountRangeFrom: 0,
+      amountRangeTo: 10000,
+      annualInterestRate: 3.0,
+      description: 'Tier 1'
+    });
+    expect(payload.charts[0].chartSlabs[1]).toEqual({
+      amountRangeFrom: 10001,
+      annualInterestRate: 6.0,
+      description: 'Tier 2'
+    });
+  });
 });

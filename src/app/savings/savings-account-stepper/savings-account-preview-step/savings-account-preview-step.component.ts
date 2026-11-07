@@ -94,6 +94,12 @@ export class SavingsAccountPreviewStepComponent implements OnChanges {
     'name'
   ];
 
+  chartSlabsDisplayedColumns: string[] = ['amountRange', 'period', 'annualInterestRate', 'description'];
+
+  get activeAccountChart(): any {
+    return this.savingsAccountProductTemplate?.accountChart || this.savingsAccountTemplate?.accountChart || null;
+  }
+
   /** Form submission event */
   @Output() submitEvent = new EventEmitter();
 

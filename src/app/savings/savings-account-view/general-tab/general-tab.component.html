@@ -198,7 +198,7 @@
                 </td>
               </tr>
             }
-            @if (savingsAccountData.nominalAnnualInterestRate) {
+            @if (savingsAccountData.nominalAnnualInterestRate && !savingsAccountData?.accountChart?.chartSlabs?.length) {
               <tr>
                 <td>{{ 'labels.inputs.Nominal Interest Rate' | translate }}</td>
                 <td class="r-amount">{{ savingsAccountData.nominalAnnualInterestRate | formatNumber }} %</td>
@@ -366,4 +366,59 @@
       </div>
     }
   </div>
+
+  @if (savingsAccountData?.accountChart?.chartSlabs?.length > 0) {
+    <div class="layout-row-wrap responsive-column flex-100 m-t-20">
+      <h4 class="table-headers flex-100">{{ 'labels.heading.Interest Rate Chart' | translate }}</h4>
+      <mat-divider class="flex-100"></mat-divider>
+      @if (savingsAccountData.accountChart.fromDate) {
+        <div class="layout-row flex-100 m-t-10">
+          <span class="flex-40">{{ 'labels.inputs.From Date' | translate }}:</span>
+          <span class="flex-60">{{ savingsAccountData.accountChart.fromDate | dateFormat }}</span>
+        </div>
+      }
+      <div class="layout-row flex-100 m-b-10">
+        <span class="flex-40">{{ 'labels.inputs.Primary Grouping by Amount' | translate }}:</span>
+        <span class="flex-60">{{ savingsAccountData.accountChart.isPrimaryGroupingByAmount | yesNo }}</span>
+      </div>
+      <table
+        class="mat-elevation-z1 flex-100"
+        mat-table
+        [dataSource]="savingsAccountData.accountChart.chartSlabs"
+      >
+        <ng-container matColumnDef="amountRange">
+          <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Amount Range' | translate }}</th>
+          <td mat-cell *matCellDef="let chartSlab">
+            {{ chartSlab.amountRangeFrom | formatNumber }} - {{ chartSlab.amountRangeTo ? (chartSlab.amountRangeTo | formatNumber) : '' }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="period">
+          <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Period' | translate }}</th>
+          <td mat-cell *matCellDef="let chartSlab">
+            @if (!chartSlab.fromPeriod || !chartSlab.periodType || chartSlab.periodType === 5 || chartSlab.periodType?.id === 5) {
+              <span>-</span>
+            } @else {
+              <span>{{
+                chartSlab.fromPeriod +
+                  ' - ' +
+                  (chartSlab.toPeriod || '') +
+                  ' ' +
+                  (chartSlab.periodType?.value || chartSlab.periodType)
+              }}</span>
+            }
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="annualInterestRate">
+          <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Interest' | translate }}</th>
+          <td mat-cell *matCellDef="let chartSlab">{{ chartSlab.annualInterestRate }} %</td>
+        </ng-container>
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Description' | translate }}</th>
+          <td mat-cell *matCellDef="let chartSlab">{{ chartSlab.description }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="chartSlabsDisplayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: chartSlabsDisplayedColumns"></tr>
+      </table>
+    </div>
+  }
 }

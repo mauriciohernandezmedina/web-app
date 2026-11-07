@@ -4058,6 +4058,7 @@
       "Breach evaluation will resume": "Breach evaluation resumes on {{date}}. The loan is evaluated again from that date."
     },
     "text": {
+      "No interest rate chart configured (Flat Nominal Rate)": "No interest rate chart configured (Flat Nominal Rate)",
       "Loan Simulator": "Loan Simulator",
       "Simulator": "Simulator",
       "Complete these steps to preview the product": "Complete these steps to preview the product",

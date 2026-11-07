@@ -15,6 +15,19 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDivider } from '@angular/material/divider';
 import { MatStepperPrevious, MatStepperNext } from '@angular/material/stepper';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import {
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow
+} from '@angular/material/table';
+import { FormatNumberPipe } from '../../../pipes/format-number.pipe';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -30,7 +43,18 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatDivider,
     MatStepperPrevious,
     FaIconComponent,
-    MatStepperNext
+    MatStepperNext,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    FormatNumberPipe
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -43,6 +67,12 @@ export class SavingsAccountTermsStepComponent implements OnChanges, OnInit {
   @Input() savingsAccountProductTemplate: any;
   /** Savings Account Template */
   @Input() savingsAccountTemplate: any;
+
+  chartSlabsDisplayedColumns: string[] = ['amountRange', 'period', 'annualInterestRate', 'description'];
+
+  get activeAccountChart(): any {
+    return this.savingsAccountProductTemplate?.accountChart || this.savingsAccountTemplate?.accountChart || null;
+  }
 
   /** Minimum date allowed. */
   minDate = new Date(2000, 0, 1);
@@ -91,6 +121,7 @@ export class SavingsAccountTermsStepComponent implements OnChanges, OnInit {
         withdrawalFeeForTransfers: this.savingsAccountProductTemplate.withdrawalFeeForTransfers
       });
       this.setOptions();
+      this.syncNominalRateStateWithChart();
     }
   }
 
@@ -113,6 +144,20 @@ export class SavingsAccountTermsStepComponent implements OnChanges, OnInit {
         enforceMinRequiredBalance: this.savingsAccountTemplate.enforceMinRequiredBalance,
         minRequiredBalance: this.savingsAccountTemplate.minRequiredBalance
       });
+    }
+    this.syncNominalRateStateWithChart();
+  }
+
+  private syncNominalRateStateWithChart(): void {
+    const nominalInterestControl = this.savingsAccountTermsForm.get('nominalAnnualInterestRate');
+    if (!nominalInterestControl) {
+      return;
+    }
+    if (this.activeAccountChart?.chartSlabs?.length > 0) {
+      nominalInterestControl.setValue(0, { emitEvent: false });
+      nominalInterestControl.disable({ emitEvent: false });
+    } else {
+      nominalInterestControl.enable({ emitEvent: false });
     }
   }
 

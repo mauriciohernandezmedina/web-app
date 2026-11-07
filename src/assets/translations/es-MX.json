@@ -4039,6 +4039,7 @@
       "Breach evaluation will resume": "La evaluación de incumplimiento se reanuda el {{date}}. El préstamo se vuelve a evaluar a partir de esa fecha."
     },
     "text": {
+      "No interest rate chart configured (Flat Nominal Rate)": "Sin tabla de tasas configurada (Usa Tasa Nominal Fija)",
       "Loan Simulator": "Simulador de Crédito",
       "Simulator": "Simulador",
       "Complete these steps to preview the product": "Complete estos pasos para ver la vista previa del producto",

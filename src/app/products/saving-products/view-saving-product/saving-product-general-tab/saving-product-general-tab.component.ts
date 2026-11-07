@@ -24,6 +24,7 @@ import {
   MatRow
 } from '@angular/material/table';
 import { ViewSavingsAccountingDetailsComponent } from '../../../../shared/accounting/view-savings-accounting-details/view-savings-accounting-details.component';
+import { DateFormatPipe } from '../../../../pipes/date-format.pipe';
 import { FormatNumberPipe } from '../../../../pipes/format-number.pipe';
 import { YesnoPipe } from '../../../../pipes/yesno.pipe';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
@@ -47,6 +48,7 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatRowDef,
     MatRow,
     ViewSavingsAccountingDetailsComponent,
+    DateFormatPipe,
     FormatNumberPipe,
     YesnoPipe
   ],
@@ -71,6 +73,12 @@ export class SavingProductGeneralTabComponent {
   feesPenaltyIncomeDisplayedColumns: string[] = [
     'chargeId',
     'incomeAccountId'
+  ];
+  chartSlabsDisplayedColumns: string[] = [
+    'amountRange',
+    'period',
+    'annualInterestRate',
+    'description'
   ];
 
   constructor() {
