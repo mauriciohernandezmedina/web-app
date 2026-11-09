@@ -47,11 +47,11 @@
  * ---------------------------------------------------------------- */
 
 @mixin accent-tokens {
-  --lp-accent: var(--brand-primary-500, #1074b9);
+  --lp-accent: var(--brand-primary-500, #28af4d);
 }
 
 @mixin accent-dark-tokens {
-  --lp-accent: color-mix(in srgb, var(--brand-primary-100, #5ba2ec) 60%, var(--mat-app-text-color, #fff));
+  --lp-accent: color-mix(in srgb, var(--brand-primary-100, #a9dfb8) 60%, var(--mat-app-text-color, #fff));
 }
 
 /* ---------------------------------------------------------------- *
@@ -84,8 +84,8 @@
   --lp-ink: #000;
   --lp-shade: #000;
 
-  /* Brand accent. #1074b9 on #fff = 4.98:1 — AA for links, labels and fills. */
-  --lp-accent: var(--brand-primary-500, #1074b9);
+  /* Brand accent. */
+  --lp-accent: var(--brand-primary-500, #28af4d);
   --lp-on-accent: #fff;
 
   /* Derived surfaces */
@@ -129,7 +129,7 @@
    * toward the theme's text colour lands at ~#91bce9: 5.06:1 on the surface.
    * Derived, so a runtime brand-colour change still flows through.
    */
-  --lp-accent: color-mix(in srgb, var(--brand-primary-100, #5ba2ec) 60%, var(--mat-app-text-color, #fff));
+  --lp-accent: color-mix(in srgb, var(--brand-primary-100, #a9dfb8) 60%, var(--mat-app-text-color, #fff));
 
   /* Filled accents invert in dark mode: light container, dark label. */
   --lp-on-accent: var(--mat-app-background-color, #303030);

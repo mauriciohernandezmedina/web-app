@@ -38,7 +38,7 @@
  * The value is unchanged by default, so existing appearance is preserved.
  */
 :root {
-  --md-sys-color-primary: var(--brand-primary-500, #1074b9);
+  --md-sys-color-primary: var(--brand-primary-500, #28af4d);
 }
 
 /**
@@ -47,7 +47,7 @@
  */
 .mat-mdc-progress-bar,
 .dark-theme .mat-mdc-progress-bar {
-  --mat-progress-bar-track-color: color-mix(in srgb, var(--brand-primary-500, #1074b9) 25%, transparent);
+  --mat-progress-bar-track-color: color-mix(in srgb, var(--brand-primary-500, #28af4d) 25%, transparent);
 }
 
 .custom-snackbar-top-right {

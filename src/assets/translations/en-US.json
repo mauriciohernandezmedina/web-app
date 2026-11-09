@@ -1,5 +1,5 @@
 {
-  "APP_NAME": "Mifos® X WebApp",
+  "APP_NAME": "FAC Fundevi",
   "Logged in as": "Logged in as",
   "Remember me": "Remember me",
   "error.resource.notImplemented.type": "Not Implemented Error",
@@ -3550,6 +3550,7 @@
       "Administrator": "Administrator",
       "Provider": "Provider",
       "Dispute Management": "Dispute Management",
+      "FAC Fundevi": "FAC Fundevi",
       "Blue": "Blue",
       "Green": "Green",
       "Purple": "Purple",

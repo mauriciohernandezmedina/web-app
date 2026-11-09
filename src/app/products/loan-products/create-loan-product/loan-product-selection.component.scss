@@ -57,9 +57,7 @@
   --lp-shade: #000;
 
   /* ---- Brand accent ---- */
-
-  /* #1074b9 on #fff = 4.98:1 — AA for the CTA and the chip fill. */
-  --lp-accent: var(--brand-primary-500, #1074b9);
+  --lp-accent: var(--brand-primary-500, #28af4d);
   --lp-on-accent: #fff;
 
   /* ---- Derived surfaces ---- */
@@ -103,7 +101,7 @@
    * 5.06:1 on the card, 4.27:1 against the icon tile. Derived (not hardcoded)
    * so a runtime brand change still flows through.
    */
-  --lp-accent: color-mix(in srgb, var(--brand-primary-100, #5ba2ec) 60%, var(--mat-app-text-color, #fff));
+  --lp-accent: color-mix(in srgb, var(--brand-primary-100, #a9dfb8) 60%, var(--mat-app-text-color, #fff));
 
   /* Filled chip inverts in dark mode: light container, dark label (6.65:1). */
   --lp-on-accent: var(--mat-app-background-color, #303030);

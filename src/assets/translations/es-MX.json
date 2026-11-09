@@ -1,5 +1,5 @@
 {
-  "APP_NAME": "Mifos® X WebApp",
+  "APP_NAME": "FAC Fundevi",
   "Logged in as": "Conectado como",
   "Remember me": "Recordar me",
   "errors": {
@@ -3535,6 +3535,7 @@
       "Audit Trail": "Registro de auditoría",
       "Restart Period from Reset Date": "Reiniciar el período desde la fecha de reinicio",
       "Breach evaluation disabled since": "Evaluación de incumplimiento deshabilitada desde el {{date}}",
+      "FAC Fundevi": "FAC Fundevi",
       "Blue": "Azul",
       "Green": "Verde",
       "Light Green": "Verde claro",

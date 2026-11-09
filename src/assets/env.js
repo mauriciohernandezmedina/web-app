@@ -42,7 +42,7 @@
   window['env']['displayBackEndInfo'] = '';
 
   // Show minimal production hero on login page
-  window['env']['productionMode'] = '';
+  window['env']['productionMode'] = true;
 
   // Enable Global Dashboard feature
   window['env']['enableGlobalDashboard'] = false;

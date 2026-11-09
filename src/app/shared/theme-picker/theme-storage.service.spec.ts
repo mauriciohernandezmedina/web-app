@@ -67,26 +67,26 @@ describe('ThemeStorageService', () => {
     expect(primaryHue()).toBe(afterFirstUser);
   });
 
-  it('falls back to blue when the branding endpoint is absent (plugin not installed)', () => {
+  it('falls back to fac-fundevi when the branding endpoint is absent (plugin not installed)', () => {
     getTenantBranding.mockReturnValue(throwError(() => ({ status: 404 })));
     let resolved: string | undefined;
     service.fetchTenantTheme().subscribe((theme) => (resolved = theme.id));
-    expect(resolved).toBe('blue');
+    expect(resolved).toBe('fac-fundevi');
     expect(primaryHue()).toBe('');
   });
 
-  it('falls back to blue when the user lacks permission', () => {
+  it('falls back to fac-fundevi when the user lacks permission', () => {
     getTenantBranding.mockReturnValue(throwError(() => ({ status: 403 })));
     let resolved: string | undefined;
     service.fetchTenantTheme().subscribe((theme) => (resolved = theme.id));
-    expect(resolved).toBe('blue');
+    expect(resolved).toBe('fac-fundevi');
   });
 
-  it('falls back to blue for an unrecognised colour', () => {
+  it('falls back to fac-fundevi for an unrecognised colour', () => {
     getTenantBranding.mockReturnValue(of({ primaryColor: 'chartreuse' }));
     let resolved: string | undefined;
     service.fetchTenantTheme().subscribe((theme) => (resolved = theme.id));
-    expect(resolved).toBe('blue');
+    expect(resolved).toBe('fac-fundevi');
   });
 
   it('caches per tenant so switching tenants does not leak branding', () => {
@@ -94,17 +94,17 @@ describe('ThemeStorageService', () => {
     expect(service.getCachedTheme().id).toBe('green');
 
     tenantIdentifier = 'other';
-    expect(service.getCachedTheme().id).toBe('blue');
+    expect(service.getCachedTheme().id).toBe('fac-fundevi');
   });
 
-  it('falls back to blue when the read is rejected as unauthorised', () => {
+  it('falls back to fac-fundevi when the read is rejected as unauthorised', () => {
     // The endpoint is reachable but refuses the caller: a deployment where the
     // read is authenticated and the request carries no usable credentials.
     // Branding is cosmetic, so this must be silent rather than disruptive.
     getTenantBranding.mockReturnValue(throwError(() => ({ status: 401 })));
     let resolved: string | undefined;
     service.fetchTenantTheme().subscribe((theme) => (resolved = theme.id));
-    expect(resolved).toBe('blue');
+    expect(resolved).toBe('fac-fundevi');
   });
 
   it('falls back rather than throwing when the payload is not a string', () => {
@@ -121,7 +121,7 @@ describe('ThemeStorageService', () => {
     });
 
     expect(errored).toBe(false);
-    expect(resolved).toBe('blue');
+    expect(resolved).toBe('fac-fundevi');
   });
 
   it('does not overwrite a known colour when a later read fails', () => {
@@ -177,7 +177,7 @@ describe('ThemeStorageService', () => {
 
     expect(primaryHue()).toBe('');
     expect(service.getCachedTheme('default').id).toBe('red');
-    expect(service.getCachedTheme('other').id).toBe('blue');
+    expect(service.getCachedTheme('other').id).toBe('fac-fundevi');
   });
 
   it('reads the new tenant colour after the tenant changes', () => {
