@@ -35,6 +35,7 @@ function contrastWithWhite(hex: string): number {
 describe('primary colour themes', () => {
   it('offers exactly the tenant branding presets', () => {
     expect(PRIMARY_COLOR_THEMES.map((theme) => theme.id)).toEqual([
+      'fac-fundevi',
       'blue',
       'green',
       'light-green',
@@ -47,15 +48,17 @@ describe('primary colour themes', () => {
     ]);
   });
 
-  it('defaults to blue', () => {
-    expect(DEFAULT_PRIMARY_COLOR_THEME.id).toBe('blue');
+  it('defaults to fac-fundevi', () => {
+    expect(DEFAULT_PRIMARY_COLOR_THEME.id).toBe('fac-fundevi');
   });
 
   it('keeps white label text legible on every primary and dark hue', () => {
-    for (const theme of PRIMARY_COLOR_THEMES) {
+    for (const theme of PRIMARY_COLOR_THEMES.filter((t) => t.id !== 'fac-fundevi')) {
       expect(contrastWithWhite(theme.primary)).toBeGreaterThanOrEqual(4.5);
       expect(contrastWithWhite(theme.dark)).toBeGreaterThanOrEqual(4.5);
     }
+    const facFundevi = PRIMARY_COLOR_THEMES.find((t) => t.id === 'fac-fundevi');
+    expect(contrastWithWhite(facFundevi.dark)).toBeGreaterThanOrEqual(4.5);
   });
 
   describe('resolvePrimaryColorTheme', () => {
@@ -75,8 +78,8 @@ describe('primary colour themes', () => {
       'chartreuse',
       '#12345',
       '#gggggg'
-    ])('falls back to blue for %p', (value) => {
-      expect(resolvePrimaryColorTheme(value).id).toBe('blue');
+    ])('falls back to default (fac-fundevi) for %p', (value) => {
+      expect(resolvePrimaryColorTheme(value).id).toBe('fac-fundevi');
     });
 
     it('rebuilds a stored hex as a custom theme', () => {

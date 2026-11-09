@@ -70,7 +70,10 @@ export const environment = {
   displayBackEndInfo: loadedEnv.displayBackEndInfo || 'false',
   displayTenantSelector: loadedEnv.displayTenantSelector || 'true',
   /** Production mode - when true, shows minimal hero with only branding at bottom */
-  productionMode: loadedEnv.productionMode === 'true' || loadedEnv.productionMode === true || false,
+  productionMode:
+    loadedEnv.productionMode && loadedEnv.productionMode !== ''
+      ? loadedEnv.productionMode === 'true' || loadedEnv.productionMode === true
+      : true,
   tenantLogoUrl: loadedEnv.tenantLogoUrl || 'assets/images/default_home.png',
   tenantLogoUrlDark: loadedEnv.tenantLogoUrlDark || 'assets/images/white-mifos.png',
   documentationBaseUrl: loadedEnv.documentationBaseUrl || 'https://mifosforge.jira.com/wiki',
