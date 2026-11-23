@@ -242,3 +242,24 @@ export interface LoanScheduleSimulationPayload {
   transactionProcessingStrategyCode: string;
   loanTermVariations?: LoanTermVariationItem[];
 }
+
+export interface LoanSimulationDraft {
+  clientId: number;
+  clientDisplayName?: string;
+  productId: number;
+  principal: number;
+  loanTermFrequency: number;
+  loanTermFrequencyType: number;
+  numberOfRepayments: number;
+  repaymentEvery: number;
+  repaymentFrequencyType: number;
+  interestRatePerPeriod: number;
+  amortizationType: number;
+  interestType: number;
+  interestCalculationPeriodType: number;
+  expectedDisbursementDate: Date;
+  submittedOnDate: Date;
+  transactionProcessingStrategyCode: string;
+  extraRepaymentEffect: ExtraRepaymentEffectMode;
+  loanTermVariations: LoanTermVariationItem[];
+}

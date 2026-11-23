@@ -264,6 +264,9 @@
     <button mat-menu-item *mifosxHasPermission="'CREATE_LOAN'" [routerLink]="['loans-accounts', 'create']">
       {{ 'labels.buttons.New Loan Account' | translate }}
     </button>
+    <button mat-menu-item *mifosxHasPermission="'CREATE_LOAN'" [routerLink]="['loans-accounts', 'simulator']">
+      {{ 'labels.menus.Loan Simulator' | translate }}
+    </button>
     <button mat-menu-item *mifosxHasPermission="'CREATE_SAVINGSACCOUNT'" [routerLink]="['savings-accounts', 'create']">
       {{ 'labels.buttons.New Savings Account' | translate }}
     </button>

@@ -17,7 +17,12 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 export type LoanAccountPath = 'loans' | 'working-capital-loans';
 import { Dates } from 'app/core/utils/dates';
 import { SettingsService } from 'app/settings/settings.service';
-import { DisbursementData, LoanScheduleSimulationPayload, RepaymentSchedule } from './models/loan-account.model';
+import {
+  DisbursementData,
+  LoanScheduleSimulationPayload,
+  LoanSimulationDraft,
+  RepaymentSchedule
+} from './models/loan-account.model';
 import { PeriodPaymentRateChange } from './models/working-capital-loan-account.model';
 import { BreachSchedule } from './models/working-capital-loan-account.model';
 import {
@@ -40,6 +45,19 @@ export class LoansService {
   private http = inject(HttpClient);
   private settingsService = inject(SettingsService);
   private dateUtils = inject(Dates);
+  private pendingSimulationDraft: LoanSimulationDraft | null = null;
+
+  setPendingSimulationDraft(draft: LoanSimulationDraft | null): void {
+    this.pendingSimulationDraft = draft;
+  }
+
+  getPendingSimulationDraft(): LoanSimulationDraft | null {
+    return this.pendingSimulationDraft;
+  }
+
+  clearPendingSimulationDraft(): void {
+    this.pendingSimulationDraft = null;
+  }
 
   /**
    * Retrieves a single page of loans for the loans list screen.

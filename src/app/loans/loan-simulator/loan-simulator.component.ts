@@ -18,11 +18,14 @@ import {
   AbstractControl,
   FormArray,
   FormBuilder,
+  FormControl,
   FormGroup,
   Validators
 } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import {
   MatCard,
   MatCardHeader,
@@ -37,12 +40,14 @@ import { MatProgressBar } from '@angular/material/progress-bar';
 import { CurrencyPipe } from '@angular/common';
 
 import { Dates } from 'app/core/utils/dates';
+import { ClientsService } from 'app/clients/clients.service';
 import { LoansService } from 'app/loans/loans.service';
 import { SettingsService } from 'app/settings/settings.service';
 import { environment } from 'environments/environment';
 import {
   ExtraRepaymentEffectMode,
   LoanScheduleSimulationPayload,
+  LoanSimulationDraft,
   LoanTermVariationItem,
   RepaymentSchedule,
   RepaymentSchedulePeriod
@@ -66,6 +71,7 @@ import autoTable from 'jspdf-autotable';
     MatCardActions,
     MatTableModule,
     MatRadioModule,
+    MatAutocompleteModule,
     MatIcon,
     MatProgressBar,
     CurrencyPipe,
@@ -76,6 +82,8 @@ import autoTable from 'jspdf-autotable';
 export class LoanSimulatorComponent implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private clientsService = inject(ClientsService);
   private loansService = inject(LoansService);
   private settingsService = inject(SettingsService);
   private dateUtils = inject(Dates);
@@ -92,6 +100,11 @@ export class LoanSimulatorComponent implements OnInit {
   baselineEmi = 0;
   baselinePeriods: RepaymentSchedulePeriod[] = [];
   isLoading = false;
+  isSubmittingApplication = false;
+
+  clientSearchControl = new FormControl<any>('');
+  filteredClients: any[] = [];
+  selectedClient: any | null = null;
 
   simulatorForm!: FormGroup;
   installmentsFormArray: FormArray<FormGroup> = this.fb.array<FormGroup>([]);
@@ -110,6 +123,69 @@ export class LoanSimulatorComponent implements OnInit {
   ngOnInit(): void {
     this.loanProducts = this.route.snapshot.data['loanProductsBasicDetails'] || [];
     this.initForm();
+
+    this.clientSearchControl.valueChanges
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        debounceTime(300),
+        distinctUntilChanged(),
+        filter((val): val is string => typeof val === 'string')
+      )
+      .subscribe((val) => {
+        const term = val.trim();
+        if (term.length >= 2) {
+          this.clientsService.getFilteredClients('displayName', 'ASC', false, term).subscribe({
+            next: (res: any) => {
+              this.filteredClients = res?.pageItems || res || [];
+              this.cdr.markForCheck();
+            },
+            error: () => {
+              this.filteredClients = [];
+              this.cdr.markForCheck();
+            }
+          });
+        } else {
+          this.filteredClients = [];
+          this.cdr.markForCheck();
+        }
+      });
+
+    const routeClientId =
+      this.route.parent?.parent?.snapshot?.paramMap?.get('clientId') ||
+      this.route.snapshot?.queryParamMap?.get('clientId');
+    if (routeClientId) {
+      this.clientsService.getClientData(String(routeClientId)).subscribe({
+        next: (client: any) => {
+          if (client) {
+            this.onClientSelected(client);
+            this.cdr.markForCheck();
+          }
+        }
+      });
+    }
+  }
+
+  displayClientFn(client: any): string {
+    return client ? (client.accountNo ? `${client.displayName} (${client.accountNo})` : client.displayName) : '';
+  }
+
+  onClientSelected(client: any): void {
+    this.selectedClient = client;
+    this.clientSearchControl.setValue(client, { emitEvent: false });
+    this.simulatorForm.patchValue({ clientId: client.id });
+    const selectedProductId = this.simulatorForm.get('productId')?.value;
+    if (selectedProductId) {
+      this.onProductChange(selectedProductId);
+    }
+    this.cdr.markForCheck();
+  }
+
+  clearSelectedClient(): void {
+    this.selectedClient = null;
+    this.clientSearchControl.setValue('');
+    this.filteredClients = [];
+    this.simulatorForm.patchValue({ clientId: this.resolveDefaultClientId() });
+    this.cdr.markForCheck();
   }
 
   resolveDefaultClientId(): number {
@@ -551,6 +627,145 @@ export class LoanSimulatorComponent implements OnInit {
       (p) => (p.period ?? 0) >= 1
     ).length;
     return Math.max(0, this.originalNumberOfRepayments - currentPeriods);
+  }
+
+  hasScheduleVariations(): boolean {
+    const dateFormat = this.settingsService.dateFormat;
+    const baseRate = +(this.simulatorForm.get('interestRatePerPeriod')?.value ?? 0);
+
+    return this.installmentsFormArray.controls.some((control) => {
+      if (this.isRowEmiModified(control)) {
+        return true;
+      }
+      const proposedDueDate = control.get('proposedDueDate')?.value;
+      const originalDueDate = control.get('originalDueDate')?.value;
+      if (proposedDueDate && originalDueDate) {
+        const formattedProposed = this.dateUtils.formatDate(proposedDueDate, dateFormat);
+        if (formattedProposed !== originalDueDate) {
+          return true;
+        }
+      }
+      const proposedInterestRate = control.get('proposedInterestRate')?.value;
+      if (
+        proposedInterestRate !== null &&
+        proposedInterestRate !== undefined &&
+        proposedInterestRate !== '' &&
+        Math.abs(+proposedInterestRate - baseRate) > 0.0001
+      ) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  getActiveLoanTermVariations(): LoanTermVariationItem[] {
+    if (!this.baselineSchedule || !this.hasScheduleVariations()) {
+      return [];
+    }
+    return this.buildVariationsForTarget(
+      this.originalNumberOfRepayments,
+      this.simulatorForm.value.extraRepaymentEffect
+    );
+  }
+
+  resolveSubmittedOnDate(expectedDisbursementDate: Date): Date {
+    const bd = this.settingsService.businessDate;
+    const validBd = bd instanceof Date && !isNaN(bd.getTime()) ? bd : new Date();
+    return expectedDisbursementDate < validBd ? expectedDisbursementDate : validBd;
+  }
+
+  createLoanApplicationDirectly(): void {
+    if (!this.selectedClient?.id || !this.currentSchedule || this.isLoading || this.isSubmittingApplication) {
+      return;
+    }
+    const formVal = this.simulatorForm.value;
+    const dateFormat = this.settingsService.dateFormat;
+    const locale = this.settingsService.language?.code || 'en';
+    const expectedDisbursementDate = this.dateUtils.formatDate(formVal.expectedDisbursementDate, dateFormat);
+    const submittedOnDate = this.dateUtils.formatDate(
+      this.resolveSubmittedOnDate(formVal.expectedDisbursementDate),
+      dateFormat
+    );
+    const repaymentEvery = +formVal.repaymentEvery;
+
+    const payload: any = {
+      clientId: +this.selectedClient.id,
+      productId: +formVal.productId,
+      loanType: 'individual',
+      locale,
+      dateFormat,
+      principal: +formVal.principal,
+      loanTermFrequency: this.originalNumberOfRepayments * repaymentEvery,
+      loanTermFrequencyType: +formVal.loanTermFrequencyType,
+      numberOfRepayments: this.originalNumberOfRepayments,
+      repaymentEvery,
+      repaymentFrequencyType: +formVal.repaymentFrequencyType,
+      interestRatePerPeriod: +formVal.interestRatePerPeriod,
+      amortizationType: +formVal.amortizationType,
+      interestType: +formVal.interestType,
+      interestCalculationPeriodType: +formVal.interestCalculationPeriodType,
+      expectedDisbursementDate,
+      submittedOnDate,
+      transactionProcessingStrategyCode: formVal.transactionProcessingStrategyCode,
+      loanTermVariations: this.getActiveLoanTermVariations()
+    };
+
+    if (this.productTemplate?.multiDisburseLoan && !this.productTemplate?.disallowExpectedDisbursements) {
+      payload.disbursementData = [
+        {
+          expectedDisbursementDate,
+          principal: +formVal.principal
+        }
+      ];
+      payload.maxOutstandingLoanBalance =
+        this.productTemplate?.maxOutstandingLoanBalance ?? +formVal.principal;
+    }
+
+    this.isSubmittingApplication = true;
+    this.cdr.markForCheck();
+
+    this.loansService.createLoansAccount('loans', payload).subscribe({
+      next: (response: any) => {
+        this.isSubmittingApplication = false;
+        this.cdr.markForCheck();
+        this.router.navigate(['/clients', this.selectedClient.id, 'loans-accounts', response.resourceId, 'general']);
+      },
+      error: () => {
+        this.isSubmittingApplication = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  openInLoanApplicationWizard(): void {
+    if (!this.selectedClient?.id || !this.currentSchedule || this.isLoading) {
+      return;
+    }
+    const formVal = this.simulatorForm.value;
+    const repaymentEvery = +formVal.repaymentEvery;
+    const draft: LoanSimulationDraft = {
+      clientId: +this.selectedClient.id,
+      clientDisplayName: this.selectedClient.displayName,
+      productId: +formVal.productId,
+      principal: +formVal.principal,
+      loanTermFrequency: this.originalNumberOfRepayments * repaymentEvery,
+      loanTermFrequencyType: +formVal.loanTermFrequencyType,
+      numberOfRepayments: this.originalNumberOfRepayments,
+      repaymentEvery,
+      repaymentFrequencyType: +formVal.repaymentFrequencyType,
+      interestRatePerPeriod: +formVal.interestRatePerPeriod,
+      amortizationType: +formVal.amortizationType,
+      interestType: +formVal.interestType,
+      interestCalculationPeriodType: +formVal.interestCalculationPeriodType,
+      expectedDisbursementDate: formVal.expectedDisbursementDate,
+      submittedOnDate: this.resolveSubmittedOnDate(formVal.expectedDisbursementDate),
+      transactionProcessingStrategyCode: formVal.transactionProcessingStrategyCode,
+      extraRepaymentEffect: formVal.extraRepaymentEffect,
+      loanTermVariations: this.getActiveLoanTermVariations()
+    };
+
+    this.loansService.setPendingSimulationDraft(draft);
+    this.router.navigate(['/clients', this.selectedClient.id, 'loans-accounts', 'create']);
   }
 
   exportToPDF(): void {

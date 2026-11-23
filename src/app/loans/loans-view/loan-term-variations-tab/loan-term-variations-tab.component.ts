@@ -75,6 +75,7 @@ export class LoanTermVariationsTabComponent extends LoanAccountTabBaseComponent 
     'row',
     'startDate',
     'endDate',
+    'value',
     'days',
     'actions'
   ];
@@ -104,7 +105,9 @@ export class LoanTermVariationsTabComponent extends LoanAccountTabBaseComponent 
       this.loanId = data.loanDetailsData.id;
       this.loanTermVariationsData = [];
       data.loanDetailsData.loanTermVariations?.forEach((item: any) => {
-        item.days = this.dates.calculateDiff(new Date(item.termVariationApplicableFrom), new Date(item.dateValue)) + 1;
+        item.days = item.dateValue
+          ? this.dates.calculateDiff(new Date(item.termVariationApplicableFrom), new Date(item.dateValue)) + 1
+          : null;
         switch (item.termType.value) {
           case 'emiAmount':
             this.emiAmountData.push(item);
@@ -134,6 +137,7 @@ export class LoanTermVariationsTabComponent extends LoanAccountTabBaseComponent 
             this.extendRepaymentPeriodData.push(item);
             break;
           case 'interestRateForInstallment':
+          case 'interestRateFromInstallment':
             this.interestRateFromInstallmentData.push(item);
             break;
           case 'interestPause':

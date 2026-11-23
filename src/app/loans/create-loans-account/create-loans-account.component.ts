@@ -37,6 +37,7 @@ import { LoansAccountScheduleStepComponent } from '../loans-account-stepper/loan
 import { LoansAccountPreviewStepComponent } from '../loans-account-stepper/loans-account-preview-step/loans-account-preview-step.component';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 import { LoanProductBasicDetails } from '../models/loan-product.model';
+import { LoanTermVariationItem } from '../models/loan-account.model';
 import { LoanProductBaseComponent } from 'app/products/loan-products/common/loan-product-base.component';
 import { Dates } from 'app/core/utils/dates';
 
@@ -101,6 +102,7 @@ export class CreateLoansAccountComponent extends LoanProductBaseComponent implem
 
   loanProductsBasicDetails: LoanProductBasicDetails[] | null = null;
   productType: string | null = null;
+  simulatedLoanTermVariations: LoanTermVariationItem[] = [];
 
   /**
    * Sets loans account create form.
@@ -113,6 +115,10 @@ export class CreateLoansAccountComponent extends LoanProductBaseComponent implem
   constructor() {
     super();
     this.loanProductsBasicDetails = [];
+    const draft = this.loansService.getPendingSimulationDraft();
+    if (draft) {
+      this.simulatedLoanTermVariations = [...(draft.loanTermVariations || [])];
+    }
     this.route.data
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((data: { loansAccountTemplate: any; loanProductsBasicDetails: LoanProductBasicDetails[] }) => {
@@ -161,6 +167,9 @@ export class CreateLoansAccountComponent extends LoanProductBaseComponent implem
       }
       this.multiDisburseLoan = this.loansAccountProductTemplate.multiDisburseLoan;
       this.setDatatables();
+    }
+    if (this.productId === this.loansService.getPendingSimulationDraft()?.productId) {
+      setTimeout(() => this.loansService.clearPendingSimulationDraft(), 0);
     }
     this.cdr.detectChanges();
   }
@@ -218,7 +227,10 @@ export class CreateLoansAccountComponent extends LoanProductBaseComponent implem
         ...this.loansAccountTermsStep?.loansAccountTerms,
         ...this.loansAccountChargesStep?.loansAccountCharges,
         ...this.loansAccountTermsStep?.loanCollateral,
-        ...this.loansAccountTermsStep?.disbursementData
+        ...this.loansAccountTermsStep?.disbursementData,
+        ...(this.simulatedLoanTermVariations.length > 0
+          ? { loanTermVariations: this.simulatedLoanTermVariations }
+          : {})
       };
     } else if (this.loanProductService.isWorkingCapital) {
       return {

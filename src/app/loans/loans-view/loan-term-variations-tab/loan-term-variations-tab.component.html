@@ -10,7 +10,7 @@
   @for (loanTermVariation of loanTermVariationsData; track loanTermVariation) {
     <div>
       <h3 class="m-t-20">{{ 'labels.heading.' + loanTermVariation.label | translate }}</h3>
-      <table mat-table [dataSource]="loanTermVariation.data">
+      <table mat-table [dataSource]="loanTermVariation.data" class="flex-100">
         <ng-container matColumnDef="row">
           <th mat-header-cell *matHeaderCellDef>#</th>
           <td mat-cell *matCellDef="let item; let idx = index">{{ idx + 1 }}</td>
@@ -21,15 +21,19 @@
         </ng-container>
         <ng-container matColumnDef="endDate">
           <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.End Date' | translate }}</th>
-          <td mat-cell *matCellDef="let item">{{ item.dateValue | dateFormat }}</td>
+          <td mat-cell *matCellDef="let item">{{ item.dateValue ? (item.dateValue | dateFormat) : '-' }}</td>
         </ng-container>
         <ng-container matColumnDef="value">
           <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Value' | translate }}</th>
-          <td mat-cell *matCellDef="let item">{{ item.decimalValue | formatNumber }}</td>
+          <td mat-cell *matCellDef="let item">
+            {{ item.decimalValue !== null && item.decimalValue !== undefined ? (item.decimalValue | formatNumber) : '-' }}
+          </td>
         </ng-container>
         <ng-container matColumnDef="days">
           <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Days' | translate }}</th>
-          <td mat-cell *matCellDef="let item">{{ item.days | formatNumber }}</td>
+          <td mat-cell *matCellDef="let item">
+            {{ item.days !== null && item.days !== undefined ? (item.days | formatNumber) : '-' }}
+          </td>
         </ng-container>
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Actions' | translate }}</th>

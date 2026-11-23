@@ -527,6 +527,8 @@
       "Home": "Inicio"
     },
     "buttons": {
+      "Create Loan Application": "Crear Solicitud Directa",
+      "Open in Loan Application Wizard": "Continuar en Asistente de Solicitud",
       "Simulate Base Schedule": "Simular Cronograma Base",
       "Apply June/December Extras": "Aplicar Extras Junio/Diciembre",
       "Recalculate with Variations": "Recalcular con Variaciones",
@@ -1814,6 +1816,7 @@
       "Recovery": "Recuperación"
     },
     "inputs": {
+      "Agreed Term Variations": "Variaciones de Términos Pactadas",
       "Select Loan Product": "Seleccionar Producto de Préstamo",
       "Months": "Meses",
       "Weeks": "Semanas",
@@ -3166,7 +3169,7 @@
       "Scheduler Jobs": "Procesos calendarizados",
       "Score": "Puntos",
       "Screen Report": "Reporte de pantalla",
-      "Search Client": "Buscar Cliente",
+      "Search Client": "Buscar Asociado por Nombre",
       "Search Journal Entries": "Buscar entradas de diario",
       "Search Permissions": "Buscar permisos",
       "Select Action": "Seleccionar acción",
@@ -4040,6 +4043,7 @@
       "Breach evaluation will resume": "La evaluación de incumplimiento se reanuda el {{date}}. El préstamo se vuelve a evaluar a partir de esa fecha."
     },
     "text": {
+      "Select a client to convert this simulation into a loan application": "Seleccione un asociado arriba para convertir esta cotización en una solicitud de préstamo.",
       "No interest rate chart configured (Flat Nominal Rate)": "Sin tabla de tasas configurada (Usa Tasa Nominal Fija)",
       "Loan Simulator": "Simulador de Crédito",
       "Simulator": "Simulador",

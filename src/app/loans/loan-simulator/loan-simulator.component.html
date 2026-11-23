@@ -22,6 +22,40 @@
 
     <mat-card-content>
       <form [formGroup]="simulatorForm" class="simulator-form-grid">
+        <!-- Client Selection (Autocomplete) -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>{{ 'labels.inputs.Client' | translate }}</mat-label>
+          <input
+            type="text"
+            matInput
+            [formControl]="clientSearchControl"
+            [matAutocomplete]="clientAuto"
+            [placeholder]="'labels.inputs.Search Client' | translate"
+          />
+          @if (selectedClient) {
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="clearSelectedClient()"
+            aria-label="Clear client"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+          }
+          <mat-autocomplete
+            #clientAuto="matAutocomplete"
+            [displayWith]="displayClientFn.bind(this)"
+            (optionSelected)="onClientSelected($event.option.value)"
+          >
+            @for (client of filteredClients; track client.id) {
+            <mat-option [value]="client">
+              {{ client.displayName }} @if (client.accountNo) { ({{ client.accountNo }}) }
+            </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
         <!-- Product Selection -->
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>{{ 'labels.inputs.Select Loan Product' | translate }}</mat-label>
@@ -169,7 +203,33 @@
         <mat-icon>picture_as_pdf</mat-icon>
         {{ 'labels.buttons.Export to PDF' | translate }}
       </button>
+
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="createLoanApplicationDirectly()"
+        [disabled]="!selectedClient || !currentSchedule || isLoading || isSubmittingApplication"
+      >
+        <mat-icon>send</mat-icon>
+        {{ 'labels.buttons.Create Loan Application' | translate }}
+      </button>
+
+      <button
+        mat-stroked-button
+        color="accent"
+        (click)="openInLoanApplicationWizard()"
+        [disabled]="!selectedClient || !currentSchedule || isLoading || isSubmittingApplication"
+      >
+        <mat-icon>assignment</mat-icon>
+        {{ 'labels.buttons.Open in Loan Application Wizard' | translate }}
+      </button>
     </mat-card-actions>
+
+    @if (!selectedClient) {
+    <p class="client-required-hint" style="margin: 4px 0 0; font-size: 12px; color: rgb(0 0 0 / 60%);">
+      {{ 'labels.text.Select a client to convert this simulation into a loan application' | translate }}
+    </p>
+    }
   </mat-card>
 
   <!-- ── Comparison Summary Cards ────────────────────────────── -->
