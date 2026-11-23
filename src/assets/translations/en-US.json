@@ -530,6 +530,8 @@
       "Home": "Home"
     },
     "buttons": {
+      "Create Loan Application": "Create Loan Application",
+      "Open in Loan Application Wizard": "Open in Application Wizard",
       "Simulate Base Schedule": "Simulate Base Schedule",
       "Apply June/December Extras": "Apply June/December Extras",
       "Recalculate with Variations": "Recalculate with Variations",
@@ -1822,6 +1824,7 @@
       "Recovery": "Recovery"
     },
     "inputs": {
+      "Agreed Term Variations": "Agreed Term Variations",
       "Select Loan Product": "Select Loan Product",
       "Months": "Months",
       "Weeks": "Weeks",
@@ -3197,7 +3200,7 @@
       "Scheduler Jobs": "Scheduler Jobs",
       "Score": "Score",
       "Screen Report": "Screen Report",
-      "Search Client": "Search Client",
+      "Search Client": "Search Client by Name",
       "Search Journal Entries": "Search Journal Entries",
       "Search Permissions": "Search Permissions",
       "Select Action": "Select Action",
@@ -4059,6 +4062,7 @@
       "Breach evaluation will resume": "Breach evaluation resumes on {{date}}. The loan is evaluated again from that date."
     },
     "text": {
+      "Select a client to convert this simulation into a loan application": "Select a client above to convert this quote into a loan application.",
       "No interest rate chart configured (Flat Nominal Rate)": "No interest rate chart configured (Flat Nominal Rate)",
       "Loan Simulator": "Loan Simulator",
       "Simulator": "Simulator",

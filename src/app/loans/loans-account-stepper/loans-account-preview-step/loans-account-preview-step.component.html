@@ -235,6 +235,13 @@
       <span class="flex-70">{{ loansAccount.numberOfRepayments }}</span>
     </div>
 
+    @if (loansAccount.loanTermVariations?.length) {
+      <div class="flex-fill">
+        <span class="flex-30">{{ 'labels.inputs.Agreed Term Variations' | translate }}:</span>
+        <span class="flex-70">{{ loansAccount.loanTermVariations.length }}</span>
+      </div>
+    }
+
     <div class="flex-fill">
       <span class="flex-30">{{ 'labels.inputs.Repaid every' | translate }}:</span>
       <span class="flex-60"

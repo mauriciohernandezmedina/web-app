@@ -200,6 +200,22 @@ export class LoansAccountDetailsStepComponent extends LoanProductBaseComponent i
         this.getProductTemplate(false);
       }
     }
+    const draft = this.loansService.getPendingSimulationDraft();
+    if (draft && !this.loanId) {
+      const draftProduct = this.loanProductsBasicDetails?.find(
+        (p: LoanProductBasicDetails) => p.id === draft.productId
+      );
+      if (draftProduct) {
+        this.productSelected = draftProduct;
+        this.loansAccountDetailsForm.patchValue({
+          productId: draftProduct.shortName,
+          submittedOnDate: draft.submittedOnDate,
+          expectedDisbursementDate: draft.expectedDisbursementDate
+        });
+        this.loanProductSelected = true;
+        this.getProductTemplate(true);
+      }
+    }
     this.filterFormCtrl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.searchItem();
     });

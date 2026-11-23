@@ -31,6 +31,7 @@ import {
   NearBreach
 } from 'app/products/loan-products/models/loan-product.model';
 import { SettingsService } from 'app/settings/settings.service';
+import { LoansService } from 'app/loans/loans.service';
 import { DeleteDialogComponent } from 'app/shared/delete-dialog/delete-dialog.component';
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { DatepickerBase } from 'app/shared/form-dialog/formfield/model/datepicker-base';
@@ -109,6 +110,7 @@ export class LoansAccountTermsStepComponent extends LoanProductBaseComponent imp
   private readonly destroyRef = inject(DestroyRef);
   private formBuilder = inject(UntypedFormBuilder);
   private settingsService = inject(SettingsService);
+  private loansService = inject(LoansService);
   private route = inject(ActivatedRoute);
   private cdr = inject(ChangeDetectorRef);
   dialog = inject(MatDialog);
@@ -207,6 +209,26 @@ export class LoansAccountTermsStepComponent extends LoanProductBaseComponent imp
     this.createloansAccountTermsForm();
     this.loanId = this.route.snapshot.params['loanId'];
   }
+  private applyPendingSimulationDraftIfPresent(): void {
+    const draft = this.loansService.getPendingSimulationDraft();
+    if (draft && !this.loanId && this.loansAccountTermsData?.product?.id === draft.productId) {
+      this.loansAccountTermsForm.patchValue({
+        principalAmount: draft.principal,
+        numberOfRepayments: draft.numberOfRepayments,
+        repaymentEvery: draft.repaymentEvery,
+        repaymentFrequencyType: draft.repaymentFrequencyType,
+        loanTermFrequency: draft.loanTermFrequency,
+        loanTermFrequencyType: draft.loanTermFrequencyType,
+        interestRatePerPeriod: draft.interestRatePerPeriod,
+        amortizationType: draft.amortizationType,
+        interestType: draft.interestType,
+        interestCalculationPeriodType: draft.interestCalculationPeriodType,
+        transactionProcessingStrategyCode: draft.transactionProcessingStrategyCode
+      });
+      this.cdr.markForCheck();
+    }
+  }
+
   /**
    * Executes on change of input values
    */
@@ -347,6 +369,7 @@ export class LoansAccountTermsStepComponent extends LoanProductBaseComponent imp
             new UntypedFormControl(this.loansAccountTermsData?.maxOutstandingLoanBalance ?? null, [Validators.min(0)])
           );
         }
+        this.applyPendingSimulationDraftIfPresent();
       }
     } else if (this.loanProductService.isWorkingCapital && this.loansAccountProductTemplate) {
       this.loansAccountTermsData = this.loansAccountProductTemplate;
@@ -529,6 +552,7 @@ export class LoansAccountTermsStepComponent extends LoanProductBaseComponent imp
           new UntypedFormControl(this.loansAccountTermsData?.maxOutstandingLoanBalance ?? null, [Validators.min(0)])
         );
       }
+      this.applyPendingSimulationDraftIfPresent();
     } else if (this.loanProductService.isWorkingCapital) {
       // Editing an existing account: read from the account-specific input, not the product
       // template — loansAccountProductTemplate is still the raw account response at this point

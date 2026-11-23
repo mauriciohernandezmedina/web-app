@@ -8,12 +8,13 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatNativeDateModule } from '@angular/material/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 
 import { LoanSimulatorComponent } from './loan-simulator.component';
+import { ClientsService } from 'app/clients/clients.service';
 import { LoansService } from 'app/loans/loans.service';
 import { SettingsService } from 'app/settings/settings.service';
 import { Dates } from 'app/core/utils/dates';
@@ -43,6 +44,15 @@ describe('LoanSimulatorComponent', () => {
   let loansServiceMock: {
     calculateLoanSchedule: jest.Mock;
     getLoansAccountTemplateResource: jest.Mock;
+    createLoansAccount: jest.Mock;
+    setPendingSimulationDraft: jest.Mock;
+  };
+  let clientsServiceMock: {
+    getFilteredClients: jest.Mock;
+    getClientData: jest.Mock;
+  };
+  let routerMock: {
+    navigate: jest.Mock;
   };
   let settingsServiceMock: any;
   let datesMock: any;
@@ -96,7 +106,18 @@ describe('LoanSimulatorComponent', () => {
 
     loansServiceMock = {
       calculateLoanSchedule: jest.fn(),
-      getLoansAccountTemplateResource: jest.fn()
+      getLoansAccountTemplateResource: jest.fn(),
+      createLoansAccount: jest.fn(),
+      setPendingSimulationDraft: jest.fn()
+    };
+
+    clientsServiceMock = {
+      getFilteredClients: jest.fn().mockReturnValue(of({ pageItems: [] })),
+      getClientData: jest.fn().mockReturnValue(of(null))
+    };
+
+    routerMock = {
+      navigate: jest.fn()
     };
 
     settingsServiceMock = {
@@ -139,6 +160,8 @@ describe('LoanSimulatorComponent', () => {
       ],
       providers: [
         { provide: LoansService, useValue: loansServiceMock },
+        { provide: ClientsService, useValue: clientsServiceMock },
+        { provide: Router, useValue: routerMock },
         { provide: SettingsService, useValue: settingsServiceMock },
         { provide: Dates, useValue: datesMock },
         {
@@ -522,5 +545,99 @@ describe('LoanSimulatorComponent', () => {
     expect(mockSave).toHaveBeenCalledWith(
       expect.stringMatching(/^loan-simulation-\d{4}-\d{2}-\d{2}\.pdf$/)
     );
+  });
+
+  it('9. createLoanApplicationDirectly() sends POST /loans with selected clientId, valid submittedOnDate, agreed loanTermVariations and navigates to loan general view', () => {
+    const mockSchedule = createMockSchedule(12, 1000);
+    loansServiceMock.calculateLoanSchedule.mockReturnValue(of(mockSchedule));
+    loansServiceMock.createLoansAccount.mockReturnValue(of({ resourceId: 777 }));
+
+    component.onClientSelected({ id: 42, displayName: 'Jane Doe', accountNo: 'CL-042' });
+    component.simulatorForm.patchValue({
+      productId: 10,
+      principal: 12000,
+      numberOfRepayments: 12,
+      repaymentEvery: 1,
+      repaymentFrequencyType: 2,
+      loanTermFrequency: 12,
+      loanTermFrequencyType: 2,
+      interestRatePerPeriod: 1.5,
+      expectedDisbursementDate: new Date('2026-02-01'),
+      amortizationType: 1,
+      interestType: 0,
+      interestCalculationPeriodType: 1,
+      transactionProcessingStrategyCode: 'mifos-standard-strategy',
+      extraRepaymentEffect: 'REDUCE_EMI'
+    });
+
+    component.simulateBaseline();
+    const row1 = component.installmentsFormArray.at(0);
+    row1.get('proposedEmiAmount')?.setValue(1500);
+    component.onInstallmentEmiChange(row1);
+
+    component.createLoanApplicationDirectly();
+
+    expect(loansServiceMock.createLoansAccount).toHaveBeenCalledTimes(1);
+    const [endpoint, payload] = loansServiceMock.createLoansAccount.mock.calls[0];
+    expect(endpoint).toBe('loans');
+    expect(payload.clientId).toBe(42);
+    expect(payload.submittedOnDate).toBe('2026-01-15');
+    expect(payload.expectedDisbursementDate).toBe('2026-02-01');
+    expect(payload.loanTermVariations.length).toBe(1);
+    expect(payload.loanTermVariations[0].termType).toBe('emiAmount');
+    expect(payload.loanTermVariations[0].decimalValue).toBe(1500);
+    expect(routerMock.navigate).toHaveBeenCalledWith([
+      '/clients',
+      42,
+      'loans-accounts',
+      777,
+      'general'
+    ]);
+  });
+
+  it('10. openInLoanApplicationWizard() saves LoanSimulationDraft in LoansService with loanTermVariations and navigates to loan creation wizard', () => {
+    const mockSchedule = createMockSchedule(12, 1000);
+    loansServiceMock.calculateLoanSchedule.mockReturnValue(of(mockSchedule));
+
+    component.onClientSelected({ id: 55, displayName: 'John Smith' });
+    component.simulatorForm.patchValue({
+      productId: 10,
+      principal: 12000,
+      numberOfRepayments: 12,
+      repaymentEvery: 1,
+      repaymentFrequencyType: 2,
+      loanTermFrequency: 12,
+      loanTermFrequencyType: 2,
+      interestRatePerPeriod: 1.5,
+      expectedDisbursementDate: new Date('2026-01-10'),
+      amortizationType: 1,
+      interestType: 0,
+      interestCalculationPeriodType: 1,
+      transactionProcessingStrategyCode: 'mifos-standard-strategy',
+      extraRepaymentEffect: 'REDUCE_TERM'
+    });
+
+    component.simulateBaseline();
+    const row1 = component.installmentsFormArray.at(0);
+    row1.get('proposedEmiAmount')?.setValue(1400);
+    component.onInstallmentEmiChange(row1);
+
+    component.openInLoanApplicationWizard();
+
+    expect(loansServiceMock.setPendingSimulationDraft).toHaveBeenCalledTimes(1);
+    const draft = loansServiceMock.setPendingSimulationDraft.mock.calls[0][0];
+    expect(draft.clientId).toBe(55);
+    expect(draft.clientDisplayName).toBe('John Smith');
+    expect(draft.productId).toBe(10);
+    expect(draft.submittedOnDate).toEqual(new Date('2026-01-10'));
+    expect(draft.extraRepaymentEffect).toBe('REDUCE_TERM');
+    expect(draft.loanTermVariations.length).toBeGreaterThan(0);
+    expect(draft.loanTermVariations[0].decimalValue).toBe(1400);
+    expect(routerMock.navigate).toHaveBeenCalledWith([
+      '/clients',
+      55,
+      'loans-accounts',
+      'create'
+    ]);
   });
 });
