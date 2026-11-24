@@ -7,7 +7,7 @@
  */
 
 /** Angular Imports */
-import { ChangeDetectionStrategy, Component, DestroyRef, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, OnDestroy, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -101,6 +101,7 @@ export class PersonalDataTabComponent implements OnDestroy {
   private translateService = inject(TranslateService);
   private dialog = inject(MatDialog);
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
 
   /** Client View Data */
   clientViewData!: ClientViewData;
@@ -131,6 +132,7 @@ export class PersonalDataTabComponent implements OnDestroy {
         catchError(() => {
           this.isKycEnabled = false;
           this.configLoaded = true;
+          this.cdr.markForCheck();
           return EMPTY;
         })
       )
@@ -139,6 +141,7 @@ export class PersonalDataTabComponent implements OnDestroy {
         this.isKycEnabled = kycConfig?.enabled ?? false;
         this.configLoaded = true;
         this.loadValidationData();
+        this.cdr.markForCheck();
       });
 
     this.route.parent.data
@@ -151,6 +154,7 @@ export class PersonalDataTabComponent implements OnDestroy {
         if (this.configLoaded) {
           this.loadValidationData();
         }
+        this.cdr.markForCheck();
       });
   }
 
@@ -182,6 +186,7 @@ export class PersonalDataTabComponent implements OnDestroy {
         catchError(() => {
           // Datatable may not exist yet — silently ignore
           this.hasDatatableEntry = false;
+          this.cdr.markForCheck();
           return EMPTY;
         })
       )
@@ -190,6 +195,7 @@ export class PersonalDataTabComponent implements OnDestroy {
         if (rows && rows.length > 0) {
           try {
             const raw = rows[0].row;
+            const offset = res?.columnHeaders?.[0]?.columnName === 'client_id' ? 1 : 0;
             // Columns order: nid_selected, nid_missing, nid_illegible, nid_invalid, nid_expired,
             //                legal_id_selected, legal_id_missing, legal_id_illegible, legal_id_invalid, legal_id_expired,
             //                proof_selected, proof_missing, proof_illegible, proof_invalid, proof_expired,
@@ -198,42 +204,42 @@ export class PersonalDataTabComponent implements OnDestroy {
             this.hasDatatableEntry = true;
             this.validationData = {
               nid: {
-                selected: !!raw[0],
+                selected: !!raw[offset + 0],
                 reasons: {
-                  missingDocument: !!raw[1],
-                  illegibleDocument: !!raw[2],
-                  invalidDocument: !!raw[3],
-                  expiredDocument: !!raw[4]
+                  missingDocument: !!raw[offset + 1],
+                  illegibleDocument: !!raw[offset + 2],
+                  invalidDocument: !!raw[offset + 3],
+                  expiredDocument: !!raw[offset + 4]
                 }
               },
               legalId: {
-                selected: !!raw[5],
+                selected: !!raw[offset + 5],
                 reasons: {
-                  missingDocument: !!raw[6],
-                  illegibleDocument: !!raw[7],
-                  invalidDocument: !!raw[8],
-                  expiredDocument: !!raw[9]
+                  missingDocument: !!raw[offset + 6],
+                  illegibleDocument: !!raw[offset + 7],
+                  invalidDocument: !!raw[offset + 8],
+                  expiredDocument: !!raw[offset + 9]
                 }
               },
               proofOfAddress: {
-                selected: !!raw[10],
+                selected: !!raw[offset + 10],
                 reasons: {
-                  missingDocument: !!raw[11],
-                  illegibleDocument: !!raw[12],
-                  invalidDocument: !!raw[13],
-                  expiredDocument: !!raw[14]
+                  missingDocument: !!raw[offset + 11],
+                  illegibleDocument: !!raw[offset + 12],
+                  invalidDocument: !!raw[offset + 13],
+                  expiredDocument: !!raw[offset + 14]
                 }
               },
               score: {
-                selected: !!raw[15],
+                selected: !!raw[offset + 15],
                 reasons: {
-                  missingDocument: !!raw[16],
-                  illegibleDocument: !!raw[17],
-                  invalidDocument: !!raw[18],
-                  expiredDocument: !!raw[19]
+                  missingDocument: !!raw[offset + 16],
+                  illegibleDocument: !!raw[offset + 17],
+                  invalidDocument: !!raw[offset + 18],
+                  expiredDocument: !!raw[offset + 19]
                 }
               },
-              validationStatus: (raw[20] as ValidationStatus) ?? null
+              validationStatus: (raw[offset + 20] as ValidationStatus) ?? null
             };
           } catch {
             this.validationData = null;
@@ -241,6 +247,7 @@ export class PersonalDataTabComponent implements OnDestroy {
         } else {
           this.validationData = null;
         }
+        this.cdr.markForCheck();
       });
   }
 
@@ -270,6 +277,7 @@ export class PersonalDataTabComponent implements OnDestroy {
               type: 'error',
               message: this.translateService.instant('errors.validationSaveError')
             });
+            this.cdr.markForCheck();
             return EMPTY;
           })
         )
@@ -280,6 +288,7 @@ export class PersonalDataTabComponent implements OnDestroy {
             type: 'success',
             message: this.translateService.instant('labels.messages.validationSaved')
           });
+          this.cdr.markForCheck();
         });
     });
   }
@@ -376,6 +385,7 @@ export class PersonalDataTabComponent implements OnDestroy {
             type: 'error',
             message: this.translateService.instant('errors.kycReportLoadError')
           });
+          this.cdr.markForCheck();
           return EMPTY;
         })
       )
@@ -390,6 +400,7 @@ export class PersonalDataTabComponent implements OnDestroy {
         this.rawPdfUrl = URL.createObjectURL(file);
         this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.rawPdfUrl);
         this.showPdf = true;
+        this.cdr.markForCheck();
       });
   }
 
@@ -403,6 +414,7 @@ export class PersonalDataTabComponent implements OnDestroy {
       this.rawPdfUrl = null;
     }
     this.pdfUrl = null;
+    this.cdr.markForCheck();
   }
 
   /**

@@ -7,8 +7,12 @@
 -->
 
 <div class="tab-container mat-typography production-personal-data">
-  @if (isKycEnabled) {
-    <div class="button-header">
+  <div class="button-header">
+    <button mat-stroked-button color="primary" *mifosxHasPermission="'UPDATE_CLIENT'" [routerLink]="['../', 'edit']">
+      <mat-icon>edit</mat-icon>
+      {{ 'labels.buttons.Edit Personal Data' | translate }}
+    </button>
+    @if (isKycEnabled) {
       <button mat-raised-button class="export-kyc-button" (click)="exportKyc.emit()">
         <mat-icon>download</mat-icon>
         {{ 'labels.buttons.Export KYC' | translate }}
@@ -17,8 +21,8 @@
         <mat-icon>fact_check</mat-icon>
         {{ 'labels.buttons.Validate Documentation' | translate }}
       </button>
-    </div>
-  }
+    }
+  </div>
 
   @if (isKycEnabled && validationData?.validationStatus) {
     <div

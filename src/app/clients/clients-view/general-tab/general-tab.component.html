@@ -238,6 +238,13 @@
               </div>
             </div>
             <div class="acc-actions" (click)="$event.stopPropagation()">
+              <button
+                class="row-action"
+                matTooltip="{{ 'tooltips.Download Application' | translate }}"
+                (click)="openLoanApplicationReport($event, loan.id)"
+              >
+                <i class="fa fa-file-pdf-o"></i>
+              </button>
               @if (loan.status?.active) {
                 <button
                   class="row-action primary"
