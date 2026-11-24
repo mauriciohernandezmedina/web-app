@@ -11,8 +11,8 @@
     <div class="head-text">
       <h1>
         <span class="ico"><fa-icon icon="file-export"></fa-icon></span>
-        {{ report.name }}
-        <span class="type-pill">{{ report.type }}</span>
+        {{ report.name | translateKey: 'catalogs' }}
+        <span class="type-pill">{{ report.type | translateKey: 'text' }}</span>
       </h1>
     </div>
   </header>
@@ -73,7 +73,7 @@
                 @case ('date') {
                   <div class="field">
                     <label class="field-label">
-                      {{ param.label }}<span class="required" aria-hidden="true">*</span>
+                      {{ param.label | translateKey: 'inputs' }}<span class="required" aria-hidden="true">*</span>
                     </label>
                     <mat-form-field
                       appearance="outline"

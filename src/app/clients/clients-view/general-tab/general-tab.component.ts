@@ -7,7 +7,7 @@
  */
 
 /** Angular Imports */
-import { ChangeDetectionStrategy, Component, DestroyRef, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, OnDestroy, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -78,6 +78,7 @@ export class GeneralTabComponent implements OnDestroy {
   private alertService = inject(AlertService);
   private sanitizer = inject(DomSanitizer);
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
   pdfUrl: SafeResourceUrl | null = null;
   rawPdfUrl: string | null = null;
   showPdf: boolean = false;
@@ -103,6 +104,7 @@ export class GeneralTabComponent implements OnDestroy {
             type: 'error',
             message: 'Failed to load Loan Application PDF report.'
           });
+          this.cdr.markForCheck();
           return EMPTY;
         }),
         takeUntilDestroyed(this.destroyRef)
@@ -118,6 +120,7 @@ export class GeneralTabComponent implements OnDestroy {
         this.rawPdfUrl = URL.createObjectURL(file);
         this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.rawPdfUrl);
         this.showPdf = true;
+        this.cdr.markForCheck();
       });
   }
 
@@ -128,6 +131,7 @@ export class GeneralTabComponent implements OnDestroy {
       this.rawPdfUrl = null;
     }
     this.pdfUrl = null;
+    this.cdr.markForCheck();
   }
 
   ngOnDestroy() {

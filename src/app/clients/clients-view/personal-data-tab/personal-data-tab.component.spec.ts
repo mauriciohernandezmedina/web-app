@@ -17,6 +17,7 @@ import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { LegalFormId } from 'app/clients/models/legal-form.enum';
+import { AuthenticationService } from 'app/core/authentication/authentication.service';
 import { ClientsService } from 'app/clients/clients.service';
 import { ReportsService } from 'app/reports/reports.service';
 import { SettingsService } from 'app/settings/settings.service';
@@ -80,6 +81,10 @@ describe('PersonalDataTabComponent', () => {
         TranslateModule.forRoot()
       ],
       providers: [
+        {
+          provide: AuthenticationService,
+          useValue: { getCredentials: () => ({ permissions: ['ALL_FUNCTIONS'] }) }
+        },
         {
           provide: ActivatedRoute,
           useValue: {

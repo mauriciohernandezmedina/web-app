@@ -20,6 +20,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 interface Report {
@@ -68,6 +69,7 @@ export class ReportsComponent implements OnInit {
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
   private cdr = inject(ChangeDetectorRef);
+  private translateService = inject(TranslateService);
 
   /** Raw reports data from resolver. */
   private reportsData: Report[] = [];
@@ -242,7 +244,8 @@ export class ReportsComponent implements OnInit {
         return false;
       }
       if (term.length > 0) {
-        const haystack = `${r.reportName} ${r.reportType} ${r.reportCategory}`.toLowerCase();
+        const translatedName = this.translateService.instant('labels.catalogs.' + r.reportName);
+        const haystack = `${r.reportName} ${translatedName} ${r.reportType} ${r.reportCategory}`.toLowerCase();
         if (!haystack.includes(term)) {
           return false;
         }

@@ -109,7 +109,7 @@
             </svg>
           </button>
         </div>
-        <div class="fc-title">{{ report.reportName }}</div>
+        <div class="fc-title">{{ report.reportName | translateKey: 'catalogs' }}</div>
         <div class="fc-cat">
           {{ cleanTranslatedCategory(getCategoryKey(report.reportCategory) | translate) }}
         </div>
@@ -221,7 +221,7 @@
               >
                 <path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path>
               </svg>
-              <span class="r-name-text">{{ report.reportName }}</span>
+              <span class="r-name-text">{{ report.reportName | translateKey: 'catalogs' }}</span>
             </div>
             <div class="r-meta">
               <span>{{ cleanTranslatedCategory(getCategoryKey(report.reportCategory) | translate) }}</span>

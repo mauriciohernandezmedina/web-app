@@ -8,9 +8,11 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 
+import { AuthenticationService } from 'app/core/authentication/authentication.service';
 import { Dates } from 'app/core/utils/dates';
 import { SettingsService } from 'app/settings/settings.service';
 import { ValidationStatus } from 'app/clients/models/document-validation.model';
@@ -27,6 +29,11 @@ describe('PersonProductionPersonalDataComponent', () => {
         TranslateModule.forRoot()
       ],
       providers: [
+        provideRouter([]),
+        {
+          provide: AuthenticationService,
+          useValue: { getCredentials: () => ({ permissions: ['ALL_FUNCTIONS'] }) }
+        },
         {
           provide: SettingsService,
           useValue: { language: { code: 'en' }, dateFormat: 'dd MMMM yyyy' }
@@ -349,8 +356,8 @@ describe('PersonProductionPersonalDataComponent', () => {
   it('does not render section-level Edit buttons in the read-only overview', () => {
     fixture.detectChanges();
 
-    expect(fixture.debugElement.queryAll(By.css('button:not(.yes-no-option)')).length).toBe(0);
-    expect(fixture.nativeElement.textContent).not.toContain('labels.buttons.Edit');
+    expect(fixture.debugElement.queryAll(By.css('.section button:not(.yes-no-option)')).length).toBe(0);
+    expect(fixture.debugElement.queryAll(By.css('.button-header button')).length).toBe(1);
   });
 
   it('keeps the existing KYC actions available when KYC validation is enabled', () => {
@@ -362,10 +369,11 @@ describe('PersonProductionPersonalDataComponent', () => {
     jest.spyOn(component.validateDocumentation, 'emit');
 
     fixture.detectChanges();
-    const buttons = fixture.debugElement.queryAll(By.css('button'));
+    const exportBtn = fixture.debugElement.query(By.css('.export-kyc-button'));
+    const validateBtn = fixture.debugElement.query(By.css('.validate-docs-button'));
 
-    buttons[0].nativeElement.click();
-    buttons[1].nativeElement.click();
+    exportBtn.nativeElement.click();
+    validateBtn.nativeElement.click();
 
     expect(component.exportKyc.emit).toHaveBeenCalled();
     expect(component.validateDocumentation.emit).toHaveBeenCalled();
